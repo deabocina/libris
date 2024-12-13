@@ -1,5 +1,6 @@
-import { useState } from "react";
 import "../styles/index.css";
+import { icons } from "../assets/assets";
+import { useState } from "react";
 import { gutenbergInterface } from "../interface/gutenbergInterface";
 import { fetchGutenbergBooks } from "../services/gutenbergServices";
 
@@ -25,23 +26,38 @@ const Search = () => {
 
   return (
     <div>
-      <input
-        type="search"
-        placeholder="Search for books.."
-        onChange={(e) => setQuery(e.target.value)}
-        className="rounded-xl text-black"
-      />
-      <button onClick={handleSearch}>Search</button>
+      <div className="flex justify-center relative mt-5">
+        <a href="/libris/">
+          {" "}
+          <img src={icons.logo} className="w-12"></img>
+        </a>
+
+        <button onClick={handleSearch}>
+          <img src={icons.search} className="absolute top-1 ml-2 mt-0.5 w-6" />
+        </button>
+
+        <input
+          type="search"
+          placeholder="Search books.."
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
+          className="rounded-3xl text-black w-72 h-10 pl-11 focus:outline-none focus:ring-2 focus:ring-offset-sky-700"
+        />
+      </div>
 
       {loading ? (
         <div className="flex justify-center">
-          <div className="spinner"></div>
+          <div className="spinner mt-10"></div>
         </div>
       ) : (
         <div>
           {result && result.length > 0 ? (
             result.map((book) => (
-              <div key={book.id}>
+              <div key={book.id} className="my-10">
                 <p>
                   <img src={book.formats["image/jpeg"]} />
                 </p>
@@ -57,7 +73,17 @@ const Search = () => {
                   ))}
                 </p>
                 <p>{book.languages}</p>
-                <a href={book.formats["text/html"]}>Link to read</a>
+                <p className="mt-5">
+                  {" "}
+                  <a
+                    href={book.formats["text/html"]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-sky-700 hover:bg-sky-800 rounded-3xl p-3"
+                  >
+                    Link to read
+                  </a>
+                </p>
               </div>
             ))
           ) : (
