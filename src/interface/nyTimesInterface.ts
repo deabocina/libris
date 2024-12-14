@@ -6,9 +6,7 @@ export interface nyTimesInterface {
   books: [
     {
       author: string;
-      contributor: string;
       description: string;
-      created_date: string;
       primary_isbn13: number;
       primary_isbn10: number;
       publisher: string;
