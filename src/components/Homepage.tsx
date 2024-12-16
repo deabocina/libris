@@ -153,7 +153,7 @@ const Homepage = () => {
       </h2>
 
       <div>
-        {loading && <p>Loading...</p>}
+        {loading && <div className="spinner mx-auto"></div>}
         {bestsellerResults && bestsellerResults.length > 0 ? (
           bestsellerResults.map((list) => (
             <div key={list.list_id}>
@@ -166,38 +166,26 @@ const Homepage = () => {
                     <p className="text-center border-b-2 border-emerald-900 w-8 mb-5">
                       {bestsellers.rank}
                     </p>
+                    <div className="relative group w-48 h-72 mb-3 shadow-2xl">
+                      <img
+                        src={bestsellers.book_image}
+                        alt={`Cover of ${bestsellers.title}`}
+                        className="w-full h-full object-cover transition-all duration-300 group-hover:opacity-30 group-hover:scale-105"
+                      />
 
-                    {bookResult && bookResult.length > 0 ? (
-                      bookResult.map((book) => {
-                        const matchingBook =
-                          book.volumeInfo.industryIdentifiers.find(
-                            (identifier) =>
-                              identifier.type === "ISBN_13" &&
-                              identifier.identifier ===
-                                bestsellers.primary_isbn13.toString()
-                          );
-
-                        if (matchingBook) {
-                          return (
-                            <div key={book.id}>
-                              {book.volumeInfo.imageLinks && (
-                                <img
-                                  src={book.volumeInfo.imageLinks.thumbnail}
-                                  alt={`Cover of ${book.volumeInfo.title}`}
-                                  className="mb-4 w-32 h-48 object-cover"
-                                />
-                              )}
-                            </div>
-                          );
-                        }
-                      })
-                    ) : (
-                      <p>No book data found</p>
-                    )}
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 p-4">
+                        <p>{bestsellers.description}</p>
+                      </div>
+                    </div>
 
                     <p className="font-bold">{bestsellers.title}</p>
                     <small>By {bestsellers.author}</small>
-                    {/* <p>{book.description}</p> */}
+
+                    {/* {bestsellers.buy_links.map((links, index) => (
+                      <div key={index}>
+                        <a href={links.url} className="pt-5">{links.name}</a>
+                      </div>
+                    ))} */}
                   </div>
                 ))}
               </div>
