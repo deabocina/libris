@@ -157,9 +157,10 @@ const Homepage = () => {
         {bestsellerResults && bestsellerResults.length > 0 ? (
           bestsellerResults.map((list) => (
             <div key={list.list_id}>
-              <h2 className="text-2xl text-center my-24">
+              <h2 className="text-3xl font-bold text-center my-16 bg-gradient-to-r from-green-400 via-teal-500 to-emerald-900 text-transparent bg-clip-text">
                 {list.display_name}
               </h2>
+
               <div className="flex flex-wrap gap-5 justify-center">
                 {list.books.map((bestsellers) => (
                   <div key={bestsellers.primary_isbn13} className="w-48 italic">
@@ -196,13 +197,13 @@ const Homepage = () => {
         )}
       </div>
 
-      <footer className="bg-neutral-900 p-14 mt-20 flex items-center justify-between border-box">
+      <footer className="bg-neutral-950 p-14 mt-20 flex items-center justify-between border-box">
         <blockquote className="italic text-lg text-center mx-auto">
           Not all those who wander are lost.<cite>J.R.R. Tolkien</cite>
         </blockquote>
         <a
           href="#"
-          className="relative flex items-center justify-center bg-neutral-950 rounded-full w-10 h-10 hover:animate-pulse"
+          className="relative flex items-center justify-center bg-neutral-800 rounded-full w-10 h-10 animate-pulse"
         >
           <img src={icons.upArrow} className="w-6 h-6" alt="Back to top" />
         </a>
