@@ -3,44 +3,56 @@ import { icons } from "../assets/assets";
 import { useEffect, useState } from "react";
 import { nyTimesInterface } from "../interface/nyTimesInterface";
 import { fetchNyTimesBestsellers } from "../services/nyTimesServices";
-import { googleBooksInterface } from "../interface/googleBooksInterface";
 import { fetchGoogleBooks } from "../services/googleBooksServices";
 import { useCustomInView } from "../hooks/useCustomInView";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../redux/store";
+import {
+  setQuery,
+  setResults,
+  setLoading,
+  setError,
+} from "../redux/searchSlice";
 
 const Homepage = () => {
-  const [query, setQuery] = useState<string>("");
-  const [bookResult, setBookResults] = useState<googleBooksInterface[] | null>(
-    null
-  );
-  const [loading, setLoading] = useState<boolean>(false);
+  const [localQuery, setLocalQuery] = useState<string>("");
+  const dispatch = useDispatch<AppDispatch>();
+
+  const [bestsellerLoading, setBestsellerLoading] = useState<boolean>(false);
   const [bestsellerResults, setBestsellerResults] = useState<
     nyTimesInterface[] | null
   >(null);
-  const [optionsMenu, setOptionsMenu] = useState<boolean>(false);
+  const [mobileMenuToggle, setMobileMenuToggle] = useState<boolean>(false);
+
+  const navigate = useNavigate();
   const { ref: sectionRef, inView: sectionInView } = useCustomInView(0);
 
   const handleSearch = async () => {
-    setLoading(true);
-    setBookResults(null);
+    dispatch(setLoading(true));
+    dispatch(setResults([]));
     try {
-      const data = await fetchGoogleBooks(query);
+      const data = await fetchGoogleBooks(localQuery);
       if (data && data.length > 0) {
-        setBookResults(data);
+        dispatch(setResults(data));
+      } else {
+        dispatch(setError("No results found."));
       }
     } catch (error) {
-      console.log(`Error catching data: ${error}`);
+      dispatch(setError(`Error: ${error}`));
     } finally {
-      setLoading(false);
+      dispatch(setLoading(false));
+      navigate("/libris/search");
     }
   };
 
-  const handleMenuToggle = () => {
-    setOptionsMenu(!optionsMenu);
+  const handleMobileMenuToggle = () => {
+    setMobileMenuToggle(!mobileMenuToggle);
   };
 
   useEffect(() => {
     const handleBestsellers = async () => {
-      setLoading(true);
+      setBestsellerLoading(true);
       try {
         const data = await fetchNyTimesBestsellers();
         if (data && data.length > 0) {
@@ -49,7 +61,7 @@ const Homepage = () => {
       } catch (error) {
         throw new Error(`Error fetching bestsellers: ${error}`);
       } finally {
-        setLoading(false);
+        setBestsellerLoading(false);
       }
     };
     handleBestsellers();
@@ -68,17 +80,17 @@ const Homepage = () => {
               src={icons.menu}
               alt="Menu Icon"
               className="md:hidden cursor-pointer"
-              onClick={handleMenuToggle}
+              onClick={handleMobileMenuToggle}
             />
 
             <div
               className={`md:hidden fixed top-0 left-0 w-64 h-full z-10 bg-emerald-900 transform ${
-                optionsMenu ? "translate-x-0" : "-translate-x-full"
+                mobileMenuToggle ? "translate-x-0" : "-translate-x-full"
               } transition-transform duration-300 ease-in-out`}
             >
               <div className="p-5">
                 <button
-                  onClick={handleMenuToggle}
+                  onClick={handleMobileMenuToggle}
                   className="bg-neutral-900 rounded-full p-2 hover:animate-pulse"
                 >
                   <img src={icons.leftArrow} className="w-6 h-6" />
@@ -118,9 +130,10 @@ const Homepage = () => {
             <input
               type="search"
               placeholder="Search books.."
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => setLocalQuery(e.target.value)}
               onKeyUp={(e) => {
                 if (e.key === "Enter") {
+                  dispatch(setQuery(localQuery));
                   handleSearch();
                 }
               }}
@@ -153,7 +166,7 @@ const Homepage = () => {
       </h2>
 
       <div>
-        {loading && <div className="spinner mx-auto"></div>}
+        {bestsellerLoading && <div className="spinner mx-auto"></div>}
         {bestsellerResults && bestsellerResults.length > 0 ? (
           bestsellerResults.map((list) => (
             <div key={list.list_id}>
