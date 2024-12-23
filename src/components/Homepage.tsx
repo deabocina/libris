@@ -3,56 +3,19 @@ import { icons } from "../assets/assets";
 import { useEffect, useState } from "react";
 import { nyTimesInterface } from "../interface/nyTimesInterface";
 import { fetchNyTimesBestsellers } from "../services/nyTimesServices";
-import { fetchGoogleBooks } from "../services/googleBooksServices";
 import { useCustomInView } from "../hooks/useCustomInView";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../redux/store";
-import {
-  setQuery,
-  setResults,
-  setLoading,
-  setError,
-} from "../redux/searchSlice";
+import Search from "./Search";
 
 const Homepage = () => {
-  const [localQuery, setLocalQuery] = useState<string>("");
-  const dispatch = useDispatch<AppDispatch>();
-
-  const [bestsellerLoading, setBestsellerLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [bestsellerResults, setBestsellerResults] = useState<
     nyTimesInterface[] | null
   >(null);
-  const [mobileMenuToggle, setMobileMenuToggle] = useState<boolean>(false);
-
-  const navigate = useNavigate();
   const { ref: sectionRef, inView: sectionInView } = useCustomInView(0);
-
-  const handleSearch = async () => {
-    dispatch(setLoading(true));
-    dispatch(setResults([]));
-    try {
-      const data = await fetchGoogleBooks(localQuery);
-      if (data && data.length > 0) {
-        dispatch(setResults(data));
-      } else {
-        dispatch(setError("No results found."));
-      }
-    } catch (error) {
-      dispatch(setError(`Error: ${error}`));
-    } finally {
-      dispatch(setLoading(false));
-      navigate("/libris/search");
-    }
-  };
-
-  const handleMobileMenuToggle = () => {
-    setMobileMenuToggle(!mobileMenuToggle);
-  };
 
   useEffect(() => {
     const handleBestsellers = async () => {
-      setBestsellerLoading(true);
+      setLoading(true);
       try {
         const data = await fetchNyTimesBestsellers();
         if (data && data.length > 0) {
@@ -61,87 +24,17 @@ const Homepage = () => {
       } catch (error) {
         throw new Error(`Error fetching bestsellers: ${error}`);
       } finally {
-        setBestsellerLoading(false);
+        setLoading(false);
       }
     };
     handleBestsellers();
   }, []);
 
-  const navStyle =
-    "border-b-2 border-transparent transition-all duration-300 ease-in-out hover:border-white";
-
   return (
     <div>
       <div className="relative h-screen">
         <div className="absolute inset-0 bg-homepage bg-cover bg-no-repeat blur-sm -z-10" />
-        <header className="flex justify-evenly relative pt-5 uppercase">
-          <nav className="flex gap-10 items-center">
-            <img
-              src={icons.menu}
-              alt="Menu Icon"
-              className="md:hidden cursor-pointer"
-              onClick={handleMobileMenuToggle}
-            />
-
-            <div
-              className={`md:hidden fixed top-0 left-0 w-64 h-full z-10 bg-emerald-900 transform ${
-                mobileMenuToggle ? "translate-x-0" : "-translate-x-full"
-              } transition-transform duration-300 ease-in-out`}
-            >
-              <div className="p-5">
-                <button
-                  onClick={handleMobileMenuToggle}
-                  className="bg-neutral-900 rounded-full p-2 hover:animate-pulse"
-                >
-                  <img src={icons.leftArrow} className="w-6 h-6" />
-                </button>
-                <div className="flex flex-col p-5">
-                  <a href="/libris/" className={navStyle}>
-                    Bestsellers
-                  </a>
-                  <a href="/libris/" className={navStyle}>
-                    Categories
-                  </a>
-                  <a href="/libris/" className={navStyle}>
-                    About Us
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <div className="md:flex gap-10 items-center hidden">
-              <a href="/libris/" className={navStyle}>
-                Bestsellers
-              </a>
-              <a href="/libris/" className={navStyle}>
-                Categories
-              </a>
-              <a href="/libris/" className={navStyle}>
-                About Us
-              </a>
-            </div>
-          </nav>
-
-          <div className="flex">
-            <button onClick={handleSearch}>
-              <img src={icons.search} className="absolute w-6 bottom-2" />
-            </button>
-
-            <input
-              type="search"
-              placeholder="Search books.."
-              onChange={(e) => setLocalQuery(e.target.value)}
-              onKeyUp={(e) => {
-                if (e.key === "Enter") {
-                  dispatch(setQuery(localQuery));
-                  handleSearch();
-                }
-              }}
-              className="w-70 h-10 pl-11 focus:outline-none bg-transparent border-b-2 transition-all duration-300 ease focus:border-emerald-900"
-            />
-          </div>
-        </header>
-
+        <Search />
         <section
           ref={sectionRef}
           className={`flex flex-col px-5 mt-10 h-96 justify-center items-center transition-all duration-300 ease-out ${
@@ -150,10 +43,10 @@ const Homepage = () => {
               : "opacity-0 translate-y-10"
           }`}
         >
-          <h1 className="text-4xl font-bold mb-5">
+          <h1 className="text-4xl font-bold mb-5 md:mx-10 lg:text-5xl lg:mb-10 xl:mx-36">
             The Quest for Your Next Story Begins Here
           </h1>
-          <p className="text-xl">
+          <p className="text-lg md:mx-10 md:text-xl lg:text-2xl xl:mx-36 2xl:mx-52">
             In the vast land of books, many paths await. Explore the lands of
             the bestsellers or venture forth into the unknown with a search. The
             next great story is waiting for you.
@@ -161,16 +54,16 @@ const Homepage = () => {
         </section>
       </div>
 
-      <h2 className="text-3xl font-bold mb-5 p-5 uppercase bg-emerald-900 md:text-center">
+      <h2 className="text-2xl font-bold mb-5 p-5 uppercase bg-emerald-900 text-center md:text-3xl">
         Bestsellers
       </h2>
 
       <div>
-        {bestsellerLoading && <div className="spinner mx-auto"></div>}
+        {loading && <div className="spinner mx-auto"></div>}
         {bestsellerResults && bestsellerResults.length > 0 ? (
           bestsellerResults.map((list) => (
             <div key={list.list_id}>
-              <h2 className="text-3xl font-bold text-center my-16 bg-gradient-to-r from-green-400 via-teal-500 to-emerald-900 text-transparent bg-clip-text">
+              <h2 className="text-2xl font-bold mx-auto my-16 bg-neutral-800 bg-opacity-40 w-fit rounded-lg p-5 shadow-lg shadow-emerald-800 md:text-3xl transition-all duration-300 ease-in-out hover:shadow-emerald-600">
                 {list.display_name}
               </h2>
 
@@ -192,8 +85,12 @@ const Homepage = () => {
                       </div>
                     </div>
 
-                    <p className="font-bold">{bestsellers.title}</p>
-                    <small>By {bestsellers.author}</small>
+                    <p className="font-bold text-md md:text-lg">
+                      {bestsellers.title}
+                    </p>
+                    <small className="text-neutral-500">
+                      By {bestsellers.author}
+                    </small>
 
                     {/* {bestsellers.buy_links.map((links, index) => (
                       <div key={index}>
