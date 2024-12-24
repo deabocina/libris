@@ -17,9 +17,9 @@ const BookDetails = () => {
   return (
     <>
       <Search />
-      <div className="mt-16 mx-5">
-        <div className="flex mb-10">
-          <div>
+      <div className="mt-20 mx-5">
+        <div className="flex mb-16 mr-5 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4 justify-center items-center ">
+          <div className="basis-4/5">
             <h1 className="text-3xl font-bold">{book.volumeInfo.title}</h1>
             <div className="text-neutral-500 mb-10">
               <small>By {book.volumeInfo.authors}</small> ·{" "}
@@ -43,38 +43,54 @@ const BookDetails = () => {
           </div>
           <div>
             {" "}
-            <img src={book.volumeInfo.imageLinks.thumbnail} className="ml-5" />
+            <img
+              src={book.volumeInfo.imageLinks.thumbnail}
+              className="ml-5 rounded-sm"
+            />
           </div>
         </div>
 
-        <h3 className="my-5 text-xl font-bold">Description</h3>
-        <p>{book.volumeInfo.description}</p>
+        <div className="md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
+          <h3 className="my-5 text-xl font-bold">Description</h3>
+          <p>{book.volumeInfo.description}</p>
 
-        <h3 className="mt-5 mb-8 text-xl font-bold">About this edition</h3>
-        <table className="table-auto border-collapse w-full mb-5">
-          <tbody>
-            <tr>
-              <td className="text-neutral-500 p-3">Page count:</td>
-              <td>{book.volumeInfo.pageCount}</td>
-            </tr>
-            <tr>
-              <td className="text-neutral-500 p-3">Category:</td>
-              <td>{book.volumeInfo.categories}</td>
-            </tr>
-            <tr>
-              <td className="text-neutral-500 p-3">Language:</td>
-              <td>{book.volumeInfo.language}</td>
-            </tr>
-            <tr>
-              <td className="text-neutral-500 p-3">Publisher:</td>
-              <td>{book.volumeInfo.publisher}</td>
-            </tr>
-            <tr>
-              <td className="text-neutral-500 p-3">Published:</td>
-              <td>{book.volumeInfo.publishedDate}</td>
-            </tr>
-          </tbody>
-        </table>
+          <h3 className="mt-10 mb-5 text-xl font-bold">About this edition</h3>
+          <div className="flex table-auto border-collapse w-full mb-5">
+            <table className="w-2/4">
+              <tbody>
+                <tr>
+                  <td className="text-neutral-500 p-3 w-44">Page count:</td>
+                  <td>{book.volumeInfo.pageCount}</td>
+                </tr>
+                <tr>
+                  <td className="text-neutral-500 p-3">Category:</td>
+                  <td>{book.volumeInfo.categories}</td>
+                </tr>
+                <tr>
+                  <td className="text-neutral-500 p-3">Language:</td>
+                  <td>{book.volumeInfo.language}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table className="w-2/4">
+              <tbody>
+              <tr>
+                  <td className="text-neutral-500 p-3">Author:</td>
+                  <td>{book.volumeInfo.authors}</td>
+                </tr>
+                <tr>
+                  <td className="text-neutral-500 p-3 w-44">Publisher:</td>
+                  <td>{book.volumeInfo.publisher}</td>
+                </tr>
+                <tr>
+                  <td className="text-neutral-500 p-3">Published:</td>
+                  <td>{book.volumeInfo.publishedDate}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
         <p>Average rating: {book.volumeInfo.averageRating}</p>
         <p>Rating Count: {book.volumeInfo.ratingsCount}</p>

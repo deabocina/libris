@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Link } from "react-router-dom";
 import Search from "./Search";
+import parse from "html-react-parser";
 
 const SearchResults = () => {
   const { query, results, loading, error } = useSelector(
@@ -9,9 +10,12 @@ const SearchResults = () => {
   );
 
   return (
-    <div>
+    <>
       <Search />
-      <h1 className="text-3xl m-5 pt-10">Results for "{query}"</h1>
+      <h1 className="text-3xl mt-16 text-center font-bold p-6 bg-neutral-800/70 text-emerald-500 shadow-lg">
+        Results for <span className="text-white">"{query}"</span>
+      </h1>
+
       {loading && <div className="spinner mx-auto"></div>}
       {error && <p>{error}</p>}
       {results.length > 0 ? (
@@ -20,21 +24,21 @@ const SearchResults = () => {
             {results &&
               results.map((book) => (
                 <div key={book.id}>
-                  <div className="flex m-5">
-                    <div className="relative group w-42 h-72 mb-3 shadow-2xl">
+                  <div className="flex m-5 p-3 transition-colors duration-200 ease-in-out rounded-md hover:bg-neutral-800 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
+                    <div className="basis 1/5">
                       <Link to={`/libris/details/${book.id}`}>
                         {" "}
                         <img
                           src={book.volumeInfo.imageLinks.smallThumbnail}
                           alt={`Cover of ${book.volumeInfo.title}`}
-                          className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
+                          className="transition-transform duration-300 hover:scale-110 rounded-sm"
                         />
                       </Link>
                     </div>
 
-                    <div className="ml-5">
+                    <div className="ml-5 basis-4/5">
                       <Link to={`/libris/details/${book.id}`}>
-                        <h2 className="text-2xl font-bold">
+                        <h2 className="text-2xl font-bold transition-all duration-500 ease-in-out hover:underline">
                           {book.volumeInfo.title}
                         </h2>
                       </Link>
@@ -43,7 +47,9 @@ const SearchResults = () => {
                         <small>{book.volumeInfo.categories}</small> ·{" "}
                         <small>{book.volumeInfo.pageCount} pages</small>
                       </div>
-                      <p className="mt-3">{book.searchInfo.textSnippet}</p>
+                      <p className="mt-3">
+                        {parse(book.searchInfo.textSnippet)}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -51,9 +57,9 @@ const SearchResults = () => {
           </div>
         </div>
       ) : (
-        <div>No Results found.</div>
+        <div className="text-center mt-5">No Results found.</div>
       )}
-    </div>
+    </>
   );
 };
 

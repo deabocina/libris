@@ -77,7 +77,7 @@ const Homepage = () => {
                       <img
                         src={bestsellers.book_image}
                         alt={`Cover of ${bestsellers.title}`}
-                        className="w-full h-full object-cover transition-all duration-300 group-hover:opacity-30 group-hover:scale-105"
+                        className="w-full h-full object-cover rounded-sm transition-all duration-300 group-hover:opacity-30 group-hover:scale-105"
                       />
 
                       <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 p-4">
