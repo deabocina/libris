@@ -31,7 +31,7 @@ const Homepage = () => {
   }, []);
 
   return (
-    <div>
+    <>
       <div className="relative h-screen">
         <div className="absolute inset-0 bg-homepage bg-cover bg-no-repeat blur-sm -z-10" />
         <Search />
@@ -54,56 +54,62 @@ const Homepage = () => {
         </section>
       </div>
 
-      <h2 className="text-2xl font-bold mb-5 p-5 uppercase bg-emerald-900 text-center md:text-3xl">
-        Bestsellers
-      </h2>
+      <div className="bg-neutral-900 min-h-screen py-10 px-5">
+        <h2 className="text-3xl font-bold uppercase tracking-wide text-center mb-16">
+          Bestsellers
+          <span className="block w-16 h-1 bg-emerald-500 mx-auto mt-2" />
+        </h2>
 
-      <div>
-        {loading && <div className="spinner mx-auto"></div>}
+        {loading && (
+          <div className="flex justify-center items-center h-64">
+            <div className="spinner" />
+          </div>
+        )}
+
         {bestsellerResults && bestsellerResults.length > 0 ? (
-          bestsellerResults.map((list) => (
-            <div key={list.list_id}>
-              <h2 className="text-2xl font-bold mx-auto my-16 bg-neutral-800 bg-opacity-40 w-fit rounded-lg p-5 shadow-lg shadow-emerald-800 md:text-3xl transition-all duration-300 ease-in-out hover:shadow-emerald-600">
-                {list.display_name}
-              </h2>
-
-              <div className="flex flex-wrap gap-5 justify-center">
-                {list.books.map((bestsellers) => (
-                  <div key={bestsellers.primary_isbn13} className="w-48 italic">
-                    <p className="text-center border-b-2 border-emerald-900 w-8 mb-5">
-                      {bestsellers.rank}
-                    </p>
-                    <div className="relative group w-48 h-72 mb-3 shadow-2xl">
-                      <img
-                        src={bestsellers.book_image}
-                        alt={`Cover of ${bestsellers.title}`}
-                        className="w-full h-full object-cover rounded-sm transition-all duration-300 group-hover:opacity-30 group-hover:scale-105"
-                      />
-
-                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 p-4">
-                        <p>{bestsellers.description}</p>
+          <div className="space-y-16">
+            {bestsellerResults.map((list) => (
+              <div key={list.list_id} className="space-y-10">
+                <h3 className="text-xl font-bold text-center uppercase tracking-wide">
+                  {list.display_name}
+                </h3>
+                <div className="flex flex-wrap justify-center gap-6">
+                  {list.books.map((bestseller) => (
+                    <div
+                      key={bestseller.primary_isbn13}
+                      className="w-48 bg-neutral-800 p-4 rounded-lg shadow-md transition-transform transform hover:scale-105"
+                    >
+                      <div className="relative group w-full h-64 overflow-hidden rounded-md">
+                        <img
+                          src={bestseller.book_image}
+                          alt={`Cover of ${bestseller.title}`}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                        />
+                        <div className="absolute top-2 left-2 bg-emerald-500 font-bold text-xs py-1 px-2 rounded shadow-lg">
+                          #{bestseller.rank}
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-85 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                          <p className="text-sm p-4">
+                            {bestseller.description}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-4 text-center">
+                        <h4 className="text-md font-bold">
+                          {bestseller.title}
+                        </h4>
+                        <p className="text-sm text-neutral-400">
+                          By {bestseller.author}
+                        </p>
                       </div>
                     </div>
-
-                    <p className="font-bold text-md md:text-lg">
-                      {bestsellers.title}
-                    </p>
-                    <small className="text-neutral-500">
-                      By {bestsellers.author}
-                    </small>
-
-                    {/* {bestsellers.buy_links.map((links, index) => (
-                      <div key={index}>
-                        <a href={links.url} className="pt-5">{links.name}</a>
-                      </div>
-                    ))} */}
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         ) : (
-          <p className="text-center">No bestsellers found.</p>
+          <p className="text-center text-neutral-400">No bestsellers found.</p>
         )}
       </div>
 
@@ -118,7 +124,7 @@ const Homepage = () => {
           <img src={icons.upArrow} className="w-6 h-6" alt="Back to top" />
         </a>
       </footer>
-    </div>
+    </>
   );
 };
 

@@ -40,7 +40,7 @@ const Search = () => {
   };
 
   const navStyle =
-    "border-b-2 border-transparent transition-all duration-300 ease-in-out hover:border-white";
+    "border-b-2 border-transparent transition-all duration-300 ease-in-out hover:border-emerald-500";
 
   return (
     <div>
@@ -54,7 +54,7 @@ const Search = () => {
           />
 
           <div
-            className={`md:hidden fixed top-0 left-0 w-64 h-full z-10 bg-emerald-900 transform ${
+            className={`md:hidden fixed top-0 left-0 w-64 h-full z-10 bg-emerald-700 transform ${
               mobileMenuToggle ? "translate-x-0" : "-translate-x-full"
             } transition-transform duration-300 ease-in-out`}
           >
@@ -94,7 +94,9 @@ const Search = () => {
 
         <div className="flex">
           <button onClick={handleSearch}>
-            <img src={icons.search} className="absolute w-6 bottom-2" />
+            <div className="w-8 h-8 bg-emerald-500 rounded-full flex justify-center items-center relative left-9 transition-all duration-300 ease-in-out hover:bg-emerald-600">
+              <img src={icons.search} className="w-5 h-5 object-cover" />
+            </div>
           </button>
 
           <input
@@ -107,7 +109,7 @@ const Search = () => {
                 handleSearch();
               }
             }}
-            className="w-70 h-10 pl-11 focus:outline-none bg-transparent border-b-2 transition-all duration-300 ease focus:border-emerald-900"
+            className="w-70 h-10 pl-11 bg-transparent border-2 border-neutral-400/5 rounded-full transition-all duration-300 focus:border-emerald-500 focus:outline-none"
           />
         </div>
       </header>
