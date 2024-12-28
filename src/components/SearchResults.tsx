@@ -46,7 +46,7 @@ const SearchResults = () => {
                         </h2>
                       </Link>
                       <div className="text-neutral-500">
-                        <small>By {book.volumeInfo.authors}</small> ·{" "}
+                        <small>By {book.volumeInfo.authors.join(", ")}</small> ·{" "}
                         <small>{book.volumeInfo.categories}</small> ·{" "}
                         <small>{book.volumeInfo.pageCount} pages</small>
                       </div>

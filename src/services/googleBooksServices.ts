@@ -4,7 +4,9 @@ export const fetchGoogleBooks = async (query: string) => {
     throw new Error(`Error fetching API key.`);
   }
 
-  const url = `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${apiKey}
+  const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
+    query
+  )}&key=${apiKey}
 `;
 
   try {
