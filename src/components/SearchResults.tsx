@@ -51,7 +51,9 @@ const SearchResults = () => {
                         <small>{book.volumeInfo.pageCount} pages</small>
                       </div>
                       <p className="mt-3">
-                        {parse(book.searchInfo.textSnippet)}
+                        {parse(
+                          book.searchInfo?.textSnippet || "Summary unavailable."
+                        )}
                       </p>
                     </div>
                   </div>

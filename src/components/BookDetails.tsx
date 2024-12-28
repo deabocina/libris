@@ -4,6 +4,10 @@ import { RootState } from "../redux/store";
 import { icons } from "../assets/assets";
 import Search from "./Search";
 import { useEffect, useState } from "react";
+import {
+  handleGutenbergData,
+  openGutenbergLink,
+} from "../utils/gutenbergUtils";
 
 const BookDetails = () => {
   const [isFreeReadingAvailable, setIsFreeReadingAvailable] =
@@ -19,39 +23,9 @@ const BookDetails = () => {
     return fullStars + emptyStars;
   };
 
-  const handleGutenbergLink = async () => {
-    const bookTitle = book!.volumeInfo.title;
-    const url = `https://gutendex.com/books/?search=${encodeURIComponent(
-      bookTitle
-    )}`;
-
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-
-      const bookFound = data.results.find(
-        (book: any) =>
-          book.title.toLowerCase() === bookTitle.toLocaleLowerCase()
-      );
-      if (bookFound) {
-        const formats = bookFound.formats;
-        if (formats["text/html"]) {
-          setIsFreeReadingAvailable(true);
-          window.open(formats["text/html"], "_blank", "noopener noreferrer");
-        } else {
-          setIsFreeReadingAvailable(false);
-        }
-      } else {
-        setIsFreeReadingAvailable(false);
-      }
-    } catch (error) {
-      console.log(`Error fetching Gutendex data: ${error}`);
-    }
-  };
-
   useEffect(() => {
     if (book) {
-      handleGutenbergLink();
+      handleGutenbergData(book.volumeInfo.title, setIsFreeReadingAvailable);
     }
   }, [book]);
 
@@ -105,7 +79,7 @@ const BookDetails = () => {
               <>
                 {isFreeReadingAvailable ? (
                   <button
-                    onClick={handleGutenbergLink}
+                    onClick={() => openGutenbergLink(book.volumeInfo.title)}
                     className="ml-5 min-w-32 bg-emerald-500 transition-all duration-300 ease-in-out hover:bg-emerald-700 p-3 rounded-lg cursor-pointer"
                   >
                     <div className="flex justify-center items-center">
