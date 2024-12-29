@@ -35,6 +35,14 @@ const Search = () => {
     }
   };
 
+  const checkSearchInput = () => {
+    if (localQuery.trim() === "") {
+      alert("Search query cannot be empty!");
+      return;
+    }
+    handleSearch();
+  }
+
   const handleMobileMenuToggle = () => {
     setMobileMenuToggle(!mobileMenuToggle);
   };
@@ -93,7 +101,7 @@ const Search = () => {
         </nav>
 
         <div className="flex">
-          <button onClick={handleSearch}>
+          <button onClick={checkSearchInput}>
             <div className="w-8 h-8 bg-emerald-500 rounded-full flex justify-center items-center relative left-9 transition-all duration-300 ease-in-out hover:bg-emerald-600">
               <img src={icons.search} className="w-5 h-5 object-cover" />
             </div>
@@ -105,8 +113,8 @@ const Search = () => {
             onChange={(e) => setLocalQuery(e.target.value)}
             onKeyUp={(e) => {
               if (e.key === "Enter") {
+                checkSearchInput();
                 dispatch(setQuery(localQuery));
-                handleSearch();
               }
             }}
             className="w-70 h-10 pl-11 bg-transparent border-2 border-neutral-400/5 rounded-full transition-all duration-300 focus:border-emerald-500 focus:outline-none"

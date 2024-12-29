@@ -8,6 +8,7 @@ import {
   handleGutenbergData,
   openGutenbergLink,
 } from "../utils/gutenbergUtils";
+import { getFormattedDate } from "../utils/dateUtils";
 
 const BookDetails = () => {
   const [isFreeReadingAvailable, setIsFreeReadingAvailable] =
@@ -41,8 +42,10 @@ const BookDetails = () => {
           <div className="basis-4/5">
             <h1 className="text-3xl font-bold">{book.volumeInfo.title}</h1>
             <div className="text-neutral-500 mb-10">
-              <small>By {book.volumeInfo.authors.join(", ")}</small> ·{" "}
-              <small>{book.volumeInfo.categories}</small> ·{" "}
+              <small>
+                By {book.volumeInfo.authors?.join(", ") || "Unknown Author"}
+              </small>{" "}
+              · <small>{book.volumeInfo.categories}</small> ·{" "}
               <small>{book.volumeInfo.pageCount} pages</small>
               <p className="text-yellow-500 text-2xl">
                 {generateStars(book?.volumeInfo.averageRating || 0)}
@@ -104,7 +107,8 @@ const BookDetails = () => {
           <>
             {" "}
             <img
-              src={book.volumeInfo.imageLinks.thumbnail}
+              src={book.volumeInfo.imageLinks?.thumbnail}
+              alt={`Cover of ${book.volumeInfo.title}`}
               className="ml-5 rounded-sm translate-transform duration-300 ease-in-out hover:scale-110"
             />
           </>
@@ -145,7 +149,7 @@ const BookDetails = () => {
                   <td className="text-neutral-500 py-3 w-28 xl:w-44">
                     Author:
                   </td>
-                  <td>{book.volumeInfo.authors.join(", ") || "/"}</td>
+                  <td>{book.volumeInfo.authors?.join(", ") || "/"}</td>
                 </tr>
                 <tr>
                   <td className="text-neutral-500 py-3">Publisher:</td>
@@ -153,7 +157,7 @@ const BookDetails = () => {
                 </tr>
                 <tr>
                   <td className="text-neutral-500 py-3">Published:</td>
-                  <td>{book.volumeInfo.publishedDate || "/"}</td>
+                  <td>{getFormattedDate(book.volumeInfo.publishedDate) || "/"}</td>
                 </tr>
               </tbody>
             </table>
