@@ -1,9 +1,12 @@
-import React from 'react'
+import Search from "./Search";
 
 const Categories = () => {
   return (
-    <div>Categories</div>
-  )
-}
+    <div>
+      <Search />
+      Categories
+    </div>
+  );
+};
 
-export default Categories
+export default Categories;

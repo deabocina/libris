@@ -77,7 +77,7 @@ const Search = () => {
                 <a href="/libris/" className={navStyle}>
                   Bestsellers
                 </a>
-                <a href="/libris/" className={navStyle}>
+                <a href="/libris/categories" className={navStyle}>
                   Categories
                 </a>
                 <a href="/libris/" className={navStyle}>
@@ -91,7 +91,7 @@ const Search = () => {
             <a href="/libris/" className={navStyle}>
               Bestsellers
             </a>
-            <a href="/libris/" className={navStyle}>
+            <a href="/libris/categories" className={navStyle}>
               Categories
             </a>
             <a href="/libris/" className={navStyle}>

@@ -1,10 +1,10 @@
 import "../styles/index.css";
-import { icons } from "../assets/assets";
 import { useEffect, useState } from "react";
 import { nyTimesInterface } from "../interface/nyTimesInterface";
 import { fetchNyTimesBestsellers } from "../services/nyTimesServices";
 import { useCustomInView } from "../hooks/useCustomInView";
 import Search from "./Search";
+import Footer from "./Footer";
 
 const Homepage = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -112,18 +112,7 @@ const Homepage = () => {
           <p className="text-center text-neutral-400">No bestsellers found.</p>
         )}
       </div>
-
-      <footer className="bg-neutral-950 p-14 mt-20 flex items-center justify-between border-box">
-        <blockquote className="italic text-lg text-center mx-auto">
-          Not all those who wander are lost.<cite>J.R.R. Tolkien</cite>
-        </blockquote>
-        <a
-          href="#"
-          className="relative flex items-center justify-center bg-neutral-800 rounded-full w-10 h-10 animate-pulse"
-        >
-          <img src={icons.upArrow} className="w-6 h-6" alt="Back to top" />
-        </a>
-      </footer>
+      <Footer />
     </>
   );
 };

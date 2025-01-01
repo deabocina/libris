@@ -2,8 +2,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Link } from "react-router-dom";
 import Search from "./Search";
+import Footer from "./Footer";
 import parse from "html-react-parser";
-import { icons } from "../assets/assets";
 
 const SearchResults = () => {
   const { query, results, loading, error } = useSelector(
@@ -75,18 +75,7 @@ const SearchResults = () => {
           </span>
         </div>
       )}
-
-      <footer className="bg-neutral-950 p-14 mt-20 flex items-center justify-between border-box">
-        <blockquote className="italic text-lg text-center mx-auto">
-          Not all those who wander are lost.<cite>J.R.R. Tolkien</cite>
-        </blockquote>
-        <a
-          href="#"
-          className="relative flex items-center justify-center bg-neutral-800 rounded-full w-10 h-10 animate-pulse"
-        >
-          <img src={icons.upArrow} className="w-6 h-6" alt="Back to top" />
-        </a>
-      </footer>
+      <Footer />
     </>
   );
 };

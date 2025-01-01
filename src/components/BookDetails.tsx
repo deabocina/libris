@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { icons } from "../assets/assets";
 import Search from "./Search";
+import Footer from "./Footer";
 import { useEffect, useState } from "react";
 import {
   handleGutenbergData,
@@ -157,7 +158,9 @@ const BookDetails = () => {
                 </tr>
                 <tr>
                   <td className="text-neutral-500 py-3">Published:</td>
-                  <td>{getFormattedDate(book.volumeInfo.publishedDate) || "/"}</td>
+                  <td>
+                    {getFormattedDate(book.volumeInfo.publishedDate) || "/"}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -177,18 +180,7 @@ const BookDetails = () => {
           )) || <p>No identifiers available.</p>}
         </div>
       </div>
-
-      <footer className="bg-neutral-950 p-14 mt-20 flex items-center justify-between border-box">
-        <blockquote className="italic text-lg text-center mx-auto">
-          Not all those who wander are lost.<cite>J.R.R. Tolkien</cite>
-        </blockquote>
-        <a
-          href="#"
-          className="relative flex items-center justify-center bg-neutral-800 rounded-full w-10 h-10 animate-pulse"
-        >
-          <img src={icons.upArrow} className="w-6 h-6" alt="Back to top" />
-        </a>
-      </footer>
+      <Footer />
     </>
   );
 };
