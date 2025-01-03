@@ -6,10 +6,27 @@ import { googleBooksInterface } from "../interface/googleBooksInterface";
 import { Link } from "react-router-dom";
 import parse from "html-react-parser";
 import { groupedCategories } from "../data/categories";
+import Select from "react-select";
 
 const Categories = () => {
   const [books, setBooks] = useState<googleBooksInterface[]>([]);
   const [category, setCategory] = useState<string>("fiction");
+  const [reactSelect, setReactSelect] = useState<any>(null);
+
+  const options = Object.entries(groupedCategories).map(
+    ([group, categories]) => ({
+      label: `${group} (${categories.length})`,
+      options: categories.map((cat) => ({
+        label: cat,
+        value: cat.toLowerCase(),
+      })),
+    })
+  );
+
+  const handleSelectChange = (selectedOption: any) => {
+    setReactSelect(selectedOption);
+    setCategory(selectedOption.value);
+  };
 
   useEffect(() => {
     const handleBooksByCategory = async (category: string) => {
@@ -33,31 +50,52 @@ const Categories = () => {
         <div className="w-20 h-1 bg-emerald-500 mt-3 lg:mx-auto" />
       </h1>
 
-      <div className="m-5 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
-        <select
-          name="category-select"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="bg-neutral-800 p-3 rounded-lg ring-emerald-500 hover:ring-2"
-        >
-          {Object.entries(groupedCategories).map(([group, categories]) => (
-            <optgroup
-              key={group}
-              label={`${group} - ${categories.length}`}
-              className="font-bold text-lg text-emerald-500"
-            >
-              {categories.map((cat) => (
-                <option
-                  key={cat}
-                  value={cat.toLowerCase()}
-                  className="text-white"
-                >
-                  {cat}
-                </option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
+      <div className="mt-12 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
+        <Select
+          value={reactSelect}
+          onChange={handleSelectChange}
+          options={options}
+          placeholder="Choose a category.."
+          isClearable={true}
+          isSearchable={true}
+          className="text-emerald-500 w-1/2"
+          styles={{
+            control: (provided, state) => ({
+              ...provided,
+              backgroundColor: "#2d2d2d",
+              padding: "5px",
+              border: "transparent",
+              boxShadow: state.isFocused ? "0 0 0 3px #10B981" : "none",
+              cursor: "pointer",
+              "&:hover": {
+                backgroundColor: "#3c3c3c",
+              },
+            }),
+            option: (provided, state) => ({
+              ...provided,
+              backgroundColor: state.isSelected
+                ? "#10B981"
+                : state.isFocused
+                ? "#34D399"
+                : "none",
+              color: state.isSelected
+                ? "white"
+                : state.isFocused
+                ? "white"
+                : "#10B981",
+              padding: "10px 15px",
+              cursor: "pointer",
+            }),
+            singleValue: (provided) => ({
+              ...provided,
+              color: "white",
+            }),
+            input: (provided) => ({
+              ...provided,
+              color: "white",
+            }),
+          }}
+        />
       </div>
 
       <h2 className="uppercase text-xl font-bold ml-5 mt-10 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
