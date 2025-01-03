@@ -41,14 +41,14 @@ const Search = () => {
       return;
     }
     handleSearch();
-  }
+  };
 
   const handleMobileMenuToggle = () => {
     setMobileMenuToggle(!mobileMenuToggle);
   };
 
   const navStyle =
-    "border-b-2 border-transparent transition-all duration-300 ease-in-out hover:border-emerald-500";
+    "border-b-4 border-transparent transition-all duration-300 ease-in-out hover:border-emerald-500";
 
   return (
     <div>

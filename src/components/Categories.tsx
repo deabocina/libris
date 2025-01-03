@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { googleBooksInterface } from "../interface/googleBooksInterface";
 import { Link } from "react-router-dom";
 import parse from "html-react-parser";
+import { groupedCategories } from "../data/categories";
 
 const Categories = () => {
   const [books, setBooks] = useState<googleBooksInterface[]>([]);
@@ -31,40 +32,35 @@ const Categories = () => {
         Categories
         <div className="w-20 h-1 bg-emerald-500 mt-3 lg:mx-auto" />
       </h1>
-      <div className="m-5 text-emerald-500 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
-        <button
-          onClick={() => setCategory("fiction")}
-          className={
-            category === "fiction"
-              ? "mr-5 p-3 rounded-full transition-colors duration-500 ease-in-out bg-neutral-800 ring-2 ring-emerald-500"
-              : "mr-5 p-3 rounded-full transition-colors duration-500 ease-in-out hover:bg-neutral-800"
-          }
+
+      <div className="m-5 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
+        <select
+          name="category-select"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="bg-neutral-800 p-3 rounded-lg ring-emerald-500 hover:ring-2"
         >
-          Fiction
-        </button>
-        <button
-          onClick={() => setCategory("philosophy")}
-          className={
-            category === "philosophy"
-              ? "mr-5 p-3 rounded-full transition-colors duration-500 ease-in-out bg-neutral-800 ring-2 ring-emerald-500"
-              : "mr-5 p-3 rounded-full transition-colors duration-500 ease-in-out hover:bg-neutral-800"
-          }
-        >
-          Philosophy
-        </button>
-        <button
-          onClick={() => setCategory("history")}
-          className={
-            category === "history"
-              ? "mr-5 p-3 rounded-full transition-colors duration-500 ease-in-out bg-neutral-800 ring-2 ring-emerald-500"
-              : "mr-5 p-3 rounded-full transition-colors duration-500 ease-in-out hover:bg-neutral-800"
-          }
-        >
-          History
-        </button>
+          {Object.entries(groupedCategories).map(([group, categories]) => (
+            <optgroup
+              key={group}
+              label={`${group} - ${categories.length}`}
+              className="font-bold text-lg text-emerald-500"
+            >
+              {categories.map((cat) => (
+                <option
+                  key={cat}
+                  value={cat.toLowerCase()}
+                  className="text-white"
+                >
+                  {cat}
+                </option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
       </div>
 
-      <h2 className="uppercase font-bold ml-5 mt-10 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
+      <h2 className="uppercase text-xl font-bold ml-5 mt-10 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
         {category}
         <div className="w-9 h-1 bg-emerald-500 mt-3" />
       </h2>
@@ -102,8 +98,7 @@ const Categories = () => {
                               {book.volumeInfo.authors?.join(", ") ||
                                 "Unknown Author"}
                             </small>{" "}
-                            · <small>{book.volumeInfo.categories}</small> ·{" "}
-                            <small>{book.volumeInfo.pageCount} pages</small>
+                            · <small>{book.volumeInfo.pageCount} pages</small>
                           </div>
                           <p className="mt-3">
                             {parse(
@@ -120,7 +115,7 @@ const Categories = () => {
           </div>
         ) : (
           <div className="text-center my-14">
-            <span className="p-4 rounded-lg bg-emerald-500 font-bold">
+            <span className="p-4 rounded-lg mx-auto bg-emerald-500 font-bold">
               No Results found.
             </span>
           </div>
