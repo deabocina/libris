@@ -15,7 +15,9 @@ const BookDetails = () => {
   const [isFreeReadingAvailable, setIsFreeReadingAvailable] =
     useState<boolean>(false);
   const { id } = useParams<{ id: string }>();
+
   const book = useSelector((state: RootState) =>
+    state.googleBooks.books.find((book) => book.id === id) ||
     state.search.results.find((book) => book.id === id)
   );
 
@@ -32,7 +34,7 @@ const BookDetails = () => {
   }, [book]);
 
   if (!book) {
-    return <div>Book not found.</div>;
+    return <div className="text-center m-20">Book not found.</div>;
   }
 
   return (

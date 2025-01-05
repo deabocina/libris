@@ -2,14 +2,18 @@ import Search from "./Search";
 import Footer from "./Footer";
 import { fetchGoogleBooks } from "../services/googleBooksServices";
 import { useEffect, useState } from "react";
-import { googleBooksInterface } from "../interface/googleBooksInterface";
 import { Link } from "react-router-dom";
 import parse from "html-react-parser";
 import { groupedCategories } from "../data/categories";
 import Select from "react-select";
+import { AppDispatch } from "../redux/store";
+import { setBooks } from "../redux/googleBooksSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 const Categories = () => {
-  const [books, setBooks] = useState<googleBooksInterface[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const books = useSelector((state: RootState) => state.googleBooks.books);
   const [category, setCategory] = useState<string>("fiction");
   const [reactSelect, setReactSelect] = useState<any>(null);
 
@@ -32,9 +36,7 @@ const Categories = () => {
     const handleBooksByCategory = async (category: string) => {
       try {
         const data = await fetchGoogleBooks(category);
-        if (data && data.length > 0) {
-          setBooks(data);
-        }
+        dispatch(setBooks(data));
       } catch (error) {
         throw new Error(`Error fetching Google Books: ${error}`);
       }
