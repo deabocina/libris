@@ -10,6 +10,7 @@ import { AppDispatch } from "../redux/store";
 import { setBooks } from "../redux/googleBooksSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { filterStyle } from "../styles/reactSelectStyles/filterStyle";
 
 const Categories = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -45,7 +46,7 @@ const Categories = () => {
   }, [category]);
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Search />
       <h1 className="text-3xl font-bold m-5 pt-5 md:mx-auto md:w-4/5 lg:text-center">
         Categories
@@ -60,43 +61,8 @@ const Categories = () => {
           placeholder="Choose a category.."
           isClearable={true}
           isSearchable={true}
-          className="text-emerald-500 w-1/2"
-          styles={{
-            control: (provided, state) => ({
-              ...provided,
-              backgroundColor: "#2d2d2d",
-              padding: "5px",
-              border: "transparent",
-              boxShadow: state.isFocused ? "0 0 0 3px #10B981" : "none",
-              cursor: "pointer",
-              "&:hover": {
-                backgroundColor: "#3c3c3c",
-              },
-            }),
-            option: (provided, state) => ({
-              ...provided,
-              backgroundColor: state.isSelected
-                ? "#10B981"
-                : state.isFocused
-                ? "#34D399"
-                : "none",
-              color: state.isSelected
-                ? "white"
-                : state.isFocused
-                ? "white"
-                : "#10B981",
-              padding: "10px 15px",
-              cursor: "pointer",
-            }),
-            singleValue: (provided) => ({
-              ...provided,
-              color: "white",
-            }),
-            input: (provided) => ({
-              ...provided,
-              color: "white",
-            }),
-          }}
+          className="w-1/2"
+          styles={filterStyle}
         />
       </div>
 
@@ -161,6 +127,7 @@ const Categories = () => {
           </div>
         )}
       </div>
+      <div className="flex-grow" />
       <Footer />
     </div>
   );

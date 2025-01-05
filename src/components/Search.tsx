@@ -80,7 +80,7 @@ const Search = () => {
                 <a href="/libris/categories" className={navStyle}>
                   Categories
                 </a>
-                <a href="/libris/" className={navStyle}>
+                <a href="/libris/about-us" className={navStyle}>
                   About Us
                 </a>
               </div>
@@ -94,7 +94,7 @@ const Search = () => {
             <a href="/libris/categories" className={navStyle}>
               Categories
             </a>
-            <a href="/libris/" className={navStyle}>
+            <a href="/libris/about-us" className={navStyle}>
               About Us
             </a>
           </div>
