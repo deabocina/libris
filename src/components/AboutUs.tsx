@@ -32,7 +32,7 @@ const AboutUs = () => {
             <span className="font-semibold">search by author</span> or uncover
             titles through our{" "}
             <span className="font-semibold">bestseller lists</span>. However you
-            choose to navigate, <span className="font-semibold">Libris</span>
+            choose to navigate, <span className="font-semibold">Libris </span>
             is here to make finding your next great read effortless and
             enjoyable.
           </p>

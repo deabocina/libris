@@ -11,7 +11,7 @@ const SearchResults = () => {
   );
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Search />
       <h1 className="text-3xl font-bold text-center mt-16 lg:text-4xl">
         Results for <span className="text-emerald-500">"{query}"</span>
@@ -69,14 +69,15 @@ const SearchResults = () => {
           </div>
         </div>
       ) : (
-        <div className="text-center my-14">
+        <div className="text-center my-36">
           <span className="p-4 rounded-lg bg-emerald-500 font-bold">
             No Results found.
           </span>
         </div>
       )}
+      <div className="flex-grow" />
       <Footer />
-    </>
+    </div>
   );
 };
 
