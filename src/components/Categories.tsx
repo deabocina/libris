@@ -34,7 +34,7 @@ const Categories = () => {
   };
 
   useEffect(() => {
-    const handleBooksByCategory = async (category: string) => {
+    const handleBookFilter = async (category: string) => {
       try {
         const data = await fetchGoogleBooks(category);
         dispatch(setBooks(data));
@@ -42,7 +42,7 @@ const Categories = () => {
         throw new Error(`Error fetching Google Books: ${error}`);
       }
     };
-    handleBooksByCategory(category);
+    handleBookFilter(category);
   }, [category]);
 
   return (
@@ -53,7 +53,7 @@ const Categories = () => {
         <div className="w-20 h-1 bg-emerald-500 mt-3 lg:mx-auto" />
       </h1>
 
-      <div className="mt-12 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
+      <div className="mt-12 m-5 flex gap-5 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
         <Select
           value={reactSelect}
           onChange={handleSelectChange}
@@ -61,7 +61,7 @@ const Categories = () => {
           placeholder="Choose a category.."
           isClearable={true}
           isSearchable={true}
-          className="w-1/2"
+          className="w-64"
           styles={filterStyle}
         />
       </div>
@@ -81,7 +81,7 @@ const Categories = () => {
                     {book.volumeInfo.title && book.volumeInfo.pageCount > 0 && (
                       <div className="flex m-5 p-3 transition-colors duration-200 ease-in-out rounded-md hover:bg-neutral-800 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
                         <div className="basis-32">
-                          <Link to={`/libris/details/${book.id}`}>
+                          <Link to={`/details/${book.id}`}>
                             {" "}
                             <img
                               src={book.volumeInfo.imageLinks?.smallThumbnail}
@@ -92,7 +92,7 @@ const Categories = () => {
                         </div>
 
                         <div className="ml-5 basis-4/5">
-                          <Link to={`/libris/details/${book.id}`}>
+                          <Link to={`/details/${book.id}`}>
                             <h2 className="text-2xl font-bold relative group">
                               {book.volumeInfo.title}
                               <span className="absolute bottom-0 left-0 w-0 h-1 bg-emerald-500 transition-all duration-300 group-hover:w-full" />

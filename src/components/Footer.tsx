@@ -39,7 +39,12 @@ const Footer = () => {
               <cite>{quote.author}</cite>
               <button
                 onClick={handleQuotes}
-                className="mt-3 relative flex justify-center items-center mx-auto bg-neutral-800 rounded-full w-10 h-10 hover:animate-spin"
+                disabled={quote._id === "default"}
+                className={`${
+                  quote._id === "default"
+                    ? "mt-3 relative flex justify-center items-center mx-auto bg-neutral-800 rounded-full w-10 h-10 cursor-not-allowed opacity-50"
+                    : "mt-3 relative flex justify-center items-center mx-auto bg-neutral-800 rounded-full w-10 h-10 hover:animate-spin"
+                }`}
               >
                 {" "}
                 <img

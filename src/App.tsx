@@ -8,13 +8,13 @@ import BookDetails from "./components/BookDetails";
 
 const App = () => {
   return (
-    <Router>
+    <Router basename="/libris">
       <Routes>
-        <Route path="/libris/" element={<Homepage />} />
-        <Route path="/libris/categories/" element={<Categories />} />
-        <Route path="/libris/about-us" element={<AboutUs />} />
-        <Route path="/libris/search/" element={<SearchResults />} />
-        <Route path="/libris/details/:id" element={<BookDetails />} />
+        <Route path="/" element={<Homepage />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/search" element={<SearchResults />} />
+        <Route path="/details/:id" element={<BookDetails />} />
       </Routes>
     </Router>
   );

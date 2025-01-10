@@ -10,6 +10,7 @@ import {
 } from "../redux/searchSlice";
 import { fetchGoogleBooks } from "../services/googleBooksServices";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Search = () => {
   const [mobileMenuToggle, setMobileMenuToggle] = useState<boolean>(false);
@@ -31,7 +32,7 @@ const Search = () => {
       dispatch(setError(`Error: ${error}`));
     } finally {
       dispatch(setLoading(false));
-      navigate("/libris/search");
+      navigate("/search");
     }
   };
 
@@ -74,29 +75,29 @@ const Search = () => {
                 <img src={icons.leftArrow} className="w-6 h-6" />
               </button>
               <div className="flex flex-col p-5">
-                <a href="/libris/" className={navStyle}>
+                <Link to="/" className={navStyle}>
                   Bestsellers
-                </a>
-                <a href="/libris/categories" className={navStyle}>
+                </Link>
+                <Link to="/categories" className={navStyle}>
                   Categories
-                </a>
-                <a href="/libris/about-us" className={navStyle}>
+                </Link>
+                <Link to="/about-us" className={navStyle}>
                   About Us
-                </a>
+                </Link>
               </div>
             </div>
           </div>
 
           <div className="md:flex gap-10 items-center hidden">
-            <a href="/libris/" className={navStyle}>
+            <Link to="/" className={navStyle}>
               Bestsellers
-            </a>
-            <a href="/libris/categories" className={navStyle}>
+            </Link>
+            <Link to="/categories" className={navStyle}>
               Categories
-            </a>
-            <a href="/libris/about-us" className={navStyle}>
+            </Link>
+            <Link to="/about-us" className={navStyle}>
               About Us
-            </a>
+            </Link>
           </div>
         </nav>
 
