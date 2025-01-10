@@ -17,6 +17,7 @@ const Categories = () => {
   const books = useSelector((state: RootState) => state.googleBooks.books);
   const [category, setCategory] = useState<string>("fiction");
   const [reactSelect, setReactSelect] = useState<any>(null);
+  const [isbn, setIsbn] = useState<string>("");
 
   const options = Object.entries(groupedCategories).map(
     ([group, categories]) => ({
@@ -33,16 +34,25 @@ const Categories = () => {
     setCategory(selectedOption.value);
   };
 
-  useEffect(() => {
-    const handleBookFilter = async (category: string) => {
-      try {
-        const data = await fetchGoogleBooks(category);
+  const handleBookFilter = async (category: string, isbn?: string) => {
+    try {
+      if (category) {
+        const query = `subject:${category}`;
+        const data = await fetchGoogleBooks(query);
         dispatch(setBooks(data));
-      } catch (error) {
-        throw new Error(`Error fetching Google Books: ${error}`);
       }
-    };
-    handleBookFilter(category);
+      if (isbn) {
+        const query = `isbn:${isbn}`;
+        const data = await fetchGoogleBooks(query);
+        dispatch(setBooks(data));
+      }
+    } catch (error) {
+      throw new Error(`Error fetching Google Books: ${error}`);
+    }
+  };
+
+  useEffect(() => {
+    handleBookFilter(category, isbn);
   }, [category]);
 
   return (
@@ -64,10 +74,24 @@ const Categories = () => {
           className="w-64"
           styles={filterStyle}
         />
+
+        <input
+          type="text"
+          placeholder="Find by ISBN.."
+          minLength={10}
+          maxLength={13}
+          onChange={(e) => setIsbn(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleBookFilter(category, isbn);
+            }
+          }}
+          className="bg-neutral-800 pl-5 w-40 rounded-md transition-all duration-300 hover:bg-neutral-600 outline-none focus:ring-4 focus:ring-emerald-500"
+        />
       </div>
 
       <h2 className="uppercase text-xl font-bold ml-5 mt-10 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
-        {category}
+        {isbn ? "" : category}
         <div className="w-9 h-1 bg-emerald-500 mt-3" />
       </h2>
 
@@ -78,43 +102,45 @@ const Categories = () => {
               {books &&
                 books.map((book) => (
                   <div key={book.id}>
-                    {book.volumeInfo.title && book.volumeInfo.pageCount > 0 && (
-                      <div className="flex m-5 p-3 transition-colors duration-200 ease-in-out rounded-md hover:bg-neutral-800 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
-                        <div className="basis-32">
-                          <Link to={`/details/${book.id}`}>
-                            {" "}
-                            <img
-                              src={book.volumeInfo.imageLinks?.smallThumbnail}
-                              alt={`Cover of ${book.volumeInfo.title}`}
-                              className="min-w-32 min-h-48 transition-transform duration-300 hover:scale-110 rounded-sm"
-                            />
-                          </Link>
-                        </div>
-
-                        <div className="ml-5 basis-4/5">
-                          <Link to={`/details/${book.id}`}>
-                            <h2 className="text-2xl font-bold relative group">
-                              {book.volumeInfo.title}
-                              <span className="absolute bottom-0 left-0 w-0 h-1 bg-emerald-500 transition-all duration-300 group-hover:w-full" />
-                            </h2>
-                          </Link>
-                          <div className="text-neutral-500">
-                            <small>
-                              By{" "}
-                              {book.volumeInfo.authors?.join(", ") ||
-                                "Unknown Author"}
-                            </small>{" "}
-                            · <small>{book.volumeInfo.pageCount} pages</small>
+                    {book.volumeInfo.title &&
+                      book.volumeInfo.pageCount > 0 &&
+                      book.volumeInfo.categories && (
+                        <div className="flex m-5 p-3 transition-colors duration-200 ease-in-out rounded-md hover:bg-neutral-800 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
+                          <div className="basis-32">
+                            <Link to={`/details/${book.id}`}>
+                              {" "}
+                              <img
+                                src={book.volumeInfo.imageLinks?.smallThumbnail}
+                                alt={`Cover of ${book.volumeInfo.title}`}
+                                className="min-w-32 min-h-48 transition-transform duration-300 hover:scale-110 rounded-sm"
+                              />
+                            </Link>
                           </div>
-                          <p className="mt-3">
-                            {parse(
-                              book.searchInfo?.textSnippet ||
-                                "Summary unavailable."
-                            )}
-                          </p>
+
+                          <div className="ml-5 basis-4/5">
+                            <Link to={`/details/${book.id}`}>
+                              <h2 className="text-2xl font-bold relative group">
+                                {book.volumeInfo.title}
+                                <span className="absolute bottom-0 left-0 w-0 h-1 bg-emerald-500 transition-all duration-300 group-hover:w-full" />
+                              </h2>
+                            </Link>
+                            <div className="text-neutral-500">
+                              <small>
+                                By{" "}
+                                {book.volumeInfo.authors?.join(", ") ||
+                                  "Unknown Author"}
+                              </small>{" "}
+                              · <small>{book.volumeInfo.pageCount} pages</small>
+                            </div>
+                            <p className="mt-3">
+                              {parse(
+                                book.searchInfo?.textSnippet ||
+                                  "Summary unavailable."
+                              )}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                   </div>
                 ))}
             </div>
