@@ -1,14 +1,19 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Link } from "react-router-dom";
 import Search from "./Search";
 import Footer from "./Footer";
 import parse from "html-react-parser";
+import { AppDispatch } from "../redux/store";
+import { handleBookFilter } from "../utils/filterUtils";
+import { setAuthor, setCategory } from "../redux/filtersSlice";
 
 const SearchResults = () => {
   const { query, results, loading, error } = useSelector(
     (state: RootState) => state.search
   );
+  const bookFilters = useSelector((state: RootState) => state.filters);
+  const dispatch = useDispatch<AppDispatch>();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -47,13 +52,43 @@ const SearchResults = () => {
                           </h2>
                         </Link>
                         <div className="text-neutral-500">
-                          <small>
-                            By{" "}
-                            {book.volumeInfo.authors?.join(", ") ||
-                              "Unknown Author"}
-                          </small>{" "}
-                          · <small>{book.volumeInfo.categories}</small> ·{" "}
-                          <small>{book.volumeInfo.pageCount} pages</small>
+                          <Link
+                            to="/categories"
+                            onClick={() => {
+                              const author = book.volumeInfo.authors?.[0];
+                              dispatch(setAuthor(author));
+                              handleBookFilter(
+                                dispatch,
+                                bookFilters.category,
+                                "",
+                                "",
+                                author,
+                                ""
+                              );
+                            }}
+                          >
+                            <small>
+                              By{" "}
+                              <span className="text-emerald-500 font-semibold transition-colors duration-300 ease-out hover:text-emerald-700">
+                                {book.volumeInfo.authors?.join(", ") ||
+                                  "Unknown Author"}
+                              </span>
+                            </small>
+                          </Link>{" "}
+                          ·{" "}
+                          <Link
+                            to="/categories"
+                            onClick={() => {
+                              const cat = book.volumeInfo.categories?.[0];
+                              dispatch(setCategory(cat));
+                              handleBookFilter(dispatch, cat);
+                            }}
+                          >
+                            <small className="text-emerald-500 font-semibold transition-colors duration-300 ease-out hover:text-emerald-700">
+                              {book.volumeInfo.categories}
+                            </small>
+                          </Link>{" "}
+                          · <small>{book.volumeInfo.pageCount} pages</small>
                         </div>
                         <p className="mt-3">
                           {parse(

@@ -13,7 +13,7 @@ import { getFormattedDate } from "../utils/dateUtils";
 import { handleBookFilter } from "../utils/filterUtils";
 import { Link } from "react-router-dom";
 import { AppDispatch } from "../redux/store";
-import { setAuthor } from "../redux/filtersSlice";
+import { setAuthor, setCategory } from "../redux/filtersSlice";
 
 const BookDetails = () => {
   const [isFreeReadingAvailable, setIsFreeReadingAvailable] =
@@ -74,8 +74,20 @@ const BookDetails = () => {
                   </span>
                 </small>
               </Link>{" "}
-              · <small>{book.volumeInfo.categories}</small> ·{" "}
-              <small>{book.volumeInfo.pageCount} pages</small>
+              ·{" "}
+              <Link
+                to="/categories"
+                onClick={() => {
+                  const cat = book.volumeInfo.categories?.[0];
+                  dispatch(setCategory(cat));
+                  handleBookFilter(dispatch, cat);
+                }}
+              >
+                <small className="text-emerald-500 font-semibold transition-colors duration-300 ease-out hover:text-emerald-700">
+                  {book.volumeInfo.categories}
+                </small>
+              </Link>{" "}
+              · <small>{book.volumeInfo.pageCount} pages</small>
               <p className="text-yellow-500 text-2xl">
                 {generateStars(book?.volumeInfo.averageRating || 0)}
                 <span className="text-white text-lg">

@@ -5,12 +5,19 @@ import { fetchNyTimesBestsellers } from "../services/nyTimesServices";
 import { useCustomInView } from "../hooks/useCustomInView";
 import Search from "./Search";
 import Footer from "./Footer";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
+import { handleBookFilter } from "../utils/filterUtils";
+import { setAuthor } from "../redux/filtersSlice";
 
 const Homepage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [bestsellerResults, setBestsellerResults] = useState<
     nyTimesInterface[] | null
   >(null);
+  const bookFilters = useSelector((state: RootState) => state.filters);
+  const dispatch = useDispatch<AppDispatch>();
   const { ref: sectionRef, inView: sectionInView } = useCustomInView(0);
 
   useEffect(() => {
@@ -98,9 +105,28 @@ const Homepage = () => {
                         <h4 className="text-md font-bold">
                           {bestseller.title}
                         </h4>
-                        <p className="text-sm text-neutral-400">
-                          By {bestseller.author}
-                        </p>
+                        <Link
+                          to="/categories"
+                          onClick={() => {
+                            const author = bestseller.author;
+                            dispatch(setAuthor(author));
+                            handleBookFilter(
+                              dispatch,
+                              bookFilters.category,
+                              "",
+                              author,
+                              "",
+                              ""
+                            );
+                          }}
+                        >
+                          <p className="text-sm text-neutral-400">
+                            By{" "}
+                            <span className="transition-colors duration-300 ease-in-out hover:text-emerald-500">
+                              {bestseller.author}
+                            </span>
+                          </p>
+                        </Link>
                       </div>
                     </div>
                   ))}
