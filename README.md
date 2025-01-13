@@ -1,5 +1,7 @@
 # Libris 📖
 
+## **🛠️ Still Under Construction!**
+
 **Libris** is a modern book discovery app that allows you to explore bestsellers, search for books, preview them and even read them for free when available. Built using the **latest web technologies**, Libris offers a seamless, user-friendly experience **for book lovers**.
 
 ## **🔥 Discover Bestsellers**
@@ -13,8 +15,8 @@ Stay up-to-date with the hottest books on the market!
 
 Find your next great read in seconds!
 
-- Search books by title, author or category.
-- Easily filter results to match your interests.
+- Search books by title or author.
+- Easily filter results for **category**, **title**, **author**, **ISBN** or **publisher** to match your interests.
 
 ## **👀 Book Previews**
 

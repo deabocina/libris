@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { icons } from "../assets/assets";
 import Search from "./Search";
@@ -10,16 +10,23 @@ import {
   openGutenbergLink,
 } from "../utils/gutenbergUtils";
 import { getFormattedDate } from "../utils/dateUtils";
+import { handleBookFilter } from "../utils/filterUtils";
+import { Link } from "react-router-dom";
+import { AppDispatch } from "../redux/store";
+import { setAuthor } from "../redux/filtersSlice";
 
 const BookDetails = () => {
   const [isFreeReadingAvailable, setIsFreeReadingAvailable] =
     useState<boolean>(false);
   const { id } = useParams<{ id: string }>();
 
-  const book = useSelector((state: RootState) =>
-    state.googleBooks.books.find((book) => book.id === id) ||
-    state.search.results.find((book) => book.id === id)
+  const book = useSelector(
+    (state: RootState) =>
+      state.googleBooks.books.find((book) => book.id === id) ||
+      state.search.results.find((book) => book.id === id)
   );
+  const bookFilters = useSelector((state: RootState) => state.filters);
+  const dispatch = useDispatch<AppDispatch>();
 
   const generateStars = (rating: number, totalStars = 5) => {
     const fullStars = "★".repeat(rating);
@@ -45,9 +52,28 @@ const BookDetails = () => {
           <div className="basis-4/5">
             <h1 className="text-3xl font-bold">{book.volumeInfo.title}</h1>
             <div className="text-neutral-500 mb-10">
-              <small>
-                By {book.volumeInfo.authors?.join(", ") || "Unknown Author"}
-              </small>{" "}
+              <Link
+                to="/categories"
+                onClick={() => {
+                  const author = book.volumeInfo.authors?.[0];
+                  dispatch(setAuthor(author));
+                  handleBookFilter(
+                    dispatch,
+                    bookFilters.category,
+                    "",
+                    "",
+                    author,
+                    ""
+                  );
+                }}
+              >
+                <small>
+                  By{" "}
+                  <span className="text-emerald-500 font-semibold transition-colors duration-300 ease-out hover:text-emerald-700">
+                    {book.volumeInfo.authors?.join(", ") || "Unknown Author"}{" "}
+                  </span>
+                </small>
+              </Link>{" "}
               · <small>{book.volumeInfo.categories}</small> ·{" "}
               <small>{book.volumeInfo.pageCount} pages</small>
               <p className="text-yellow-500 text-2xl">
