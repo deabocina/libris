@@ -18,6 +18,7 @@ const Categories = () => {
   const [category, setCategory] = useState<string>("fiction");
   const [reactSelect, setReactSelect] = useState<any>(null);
   const [isbn, setIsbn] = useState<string>("");
+  const [author, setAuthor] = useState<string>("");
 
   const options = Object.entries(groupedCategories).map(
     ([group, categories]) => ({
@@ -34,10 +35,19 @@ const Categories = () => {
     setCategory(selectedOption.value);
   };
 
-  const handleBookFilter = async (category: string, isbn?: string) => {
+  const handleBookFilter = async (
+    category: string,
+    isbn?: string,
+    author?: string
+  ) => {
     try {
       if (category) {
         const query = `subject:${category}`;
+        const data = await fetchGoogleBooks(query);
+        dispatch(setBooks(data));
+      }
+      if (author) {
+        const query = `inauthor:${author}`;
         const data = await fetchGoogleBooks(query);
         dispatch(setBooks(data));
       }
@@ -52,8 +62,10 @@ const Categories = () => {
   };
 
   useEffect(() => {
-    handleBookFilter(category, isbn);
+    handleBookFilter(category, isbn, author);
   }, [category]);
+
+  const filters = `bg-neutral-800 p-3 pl-5 w-40 rounded-md transition-all duration-300 hover:bg-neutral-600 outline-none focus:ring-4 focus:ring-emerald-500`;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -63,7 +75,7 @@ const Categories = () => {
         <div className="w-20 h-1 bg-emerald-500 mt-3 lg:mx-auto" />
       </h1>
 
-      <div className="mt-12 m-5 flex gap-5 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
+      <div className="flex flex-wrap mt-12 m-5 gap-5 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
         <Select
           value={reactSelect}
           onChange={handleSelectChange}
@@ -77,28 +89,40 @@ const Categories = () => {
 
         <input
           type="text"
+          placeholder="Find by author.."
+          className={filters}
+          onChange={(e) => setAuthor(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleBookFilter(category, isbn, author);
+            }
+          }}
+        />
+
+        <input
+          type="text"
           placeholder="Find by ISBN.."
           minLength={10}
           maxLength={13}
           onChange={(e) => setIsbn(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              handleBookFilter(category, isbn);
+              handleBookFilter(category, isbn, author);
             }
           }}
-          className="bg-neutral-800 pl-5 w-40 rounded-md transition-all duration-300 hover:bg-neutral-600 outline-none focus:ring-4 focus:ring-emerald-500"
+          className={filters}
         />
       </div>
 
       <h2 className="uppercase text-xl font-bold ml-5 mt-10 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
-        {isbn ? "" : category}
+        {author ? author : isbn ? "" : category}
         <div className="w-9 h-1 bg-emerald-500 mt-3" />
       </h2>
 
       <div>
         {books.length > 0 ? (
           <div className="flex justify-center">
-            <div>
+            <div className="w-full max-w-7xl">
               {books &&
                 books.map((book) => (
                   <div key={book.id}>
@@ -132,9 +156,10 @@ const Categories = () => {
                               </small>{" "}
                               · <small>{book.volumeInfo.pageCount} pages</small>
                             </div>
-                            <p className="mt-3">
+                            <p className="mt-3 book-description">
                               {parse(
                                 book.searchInfo?.textSnippet ||
+                                  book.volumeInfo.description ||
                                   "Summary unavailable."
                               )}
                             </p>

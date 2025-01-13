@@ -47,3 +47,16 @@ blockquote cite {
 blockquote cite:before {
   content: "\2014 \2009";
 }
+
+.book-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .book-description {
+    width: 250px;
+  }
+}
