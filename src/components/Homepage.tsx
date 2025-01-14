@@ -114,8 +114,8 @@ const Homepage = () => {
                               dispatch,
                               bookFilters.category,
                               "",
-                              author,
                               "",
+                              author,
                               ""
                             );
                           }}

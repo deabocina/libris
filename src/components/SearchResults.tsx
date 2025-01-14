@@ -81,7 +81,7 @@ const SearchResults = () => {
                             onClick={() => {
                               const cat = book.volumeInfo.categories?.[0];
                               dispatch(setCategory(cat));
-                              handleBookFilter(dispatch, cat);
+                              handleBookFilter(dispatch, cat, "", "", "", "");
                             }}
                           >
                             <small className="text-emerald-500 font-semibold transition-colors duration-300 ease-out hover:text-emerald-700">

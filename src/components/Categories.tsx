@@ -70,6 +70,13 @@ const Categories = () => {
         <Select
           value={reactSelect}
           onChange={handleSelectChange}
+          onFocus={() => {
+            dispatch(setTitle(""));
+            dispatch(setAuthor(""));
+            dispatch(setCategory(""));
+            dispatch(setIsbn(""));
+            dispatch(setPublisher(""));
+          }}
           options={options}
           placeholder="Choose a category.."
           isClearable={true}
@@ -83,6 +90,12 @@ const Categories = () => {
           placeholder="Find by title.."
           className={filters}
           onChange={(e) => dispatch(setTitle(e.target.value))}
+          onFocus={() => {
+            dispatch(setAuthor(""));
+            dispatch(setTitle(""));
+            dispatch(setCategory(""));
+            dispatch(setIsbn(""));
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleBookFilter(
@@ -99,6 +112,12 @@ const Categories = () => {
           placeholder="Find by author.."
           className={filters}
           onChange={(e) => dispatch(setAuthor(e.target.value))}
+          onFocus={() => {
+            dispatch(setTitle(""));
+            dispatch(setCategory(""));
+            dispatch(setIsbn(""));
+            dispatch(setPublisher(""));
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleBookFilter(
@@ -115,6 +134,12 @@ const Categories = () => {
           placeholder="Find by publisher.."
           className={filters}
           onChange={(e) => dispatch(setPublisher(e.target.value))}
+          onFocus={() => {
+            dispatch(setAuthor(""));
+            dispatch(setTitle(""));
+            dispatch(setCategory(""));
+            dispatch(setIsbn(""));
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleBookFilter(
@@ -132,6 +157,12 @@ const Categories = () => {
           minLength={10}
           maxLength={13}
           onChange={(e) => dispatch(setIsbn(e.target.value))}
+          onFocus={() => {
+            dispatch(setPublisher(""));
+            dispatch(setAuthor(""));
+            dispatch(setTitle(""));
+            dispatch(setCategory(""));
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleBookFilter(

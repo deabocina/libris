@@ -10,10 +10,11 @@ import {
   openGutenbergLink,
 } from "../utils/gutenbergUtils";
 import { getFormattedDate } from "../utils/dateUtils";
+import { languages } from "../data/languages";
 import { handleBookFilter } from "../utils/filterUtils";
 import { Link } from "react-router-dom";
 import { AppDispatch } from "../redux/store";
-import { setAuthor, setCategory } from "../redux/filtersSlice";
+import { setAuthor, setCategory, setPublisher } from "../redux/filtersSlice";
 
 const BookDetails = () => {
   const [isFreeReadingAvailable, setIsFreeReadingAvailable] =
@@ -44,6 +45,8 @@ const BookDetails = () => {
     return <div className="text-center m-20">Book not found.</div>;
   }
 
+  const linkStyle = `text-emerald-500 font-semibold transition-colors duration-300 ease-out hover:text-emerald-700`;
+
   return (
     <>
       <Search />
@@ -69,7 +72,7 @@ const BookDetails = () => {
               >
                 <small>
                   By{" "}
-                  <span className="text-emerald-500 font-semibold transition-colors duration-300 ease-out hover:text-emerald-700">
+                  <span className={linkStyle}>
                     {book.volumeInfo.authors?.join(", ") || "Unknown Author"}{" "}
                   </span>
                 </small>
@@ -80,10 +83,10 @@ const BookDetails = () => {
                 onClick={() => {
                   const cat = book.volumeInfo.categories?.[0];
                   dispatch(setCategory(cat));
-                  handleBookFilter(dispatch, cat);
+                  handleBookFilter(dispatch, cat, "", "", "", "");
                 }}
               >
-                <small className="text-emerald-500 font-semibold transition-colors duration-300 ease-out hover:text-emerald-700">
+                <small className={linkStyle}>
                   {book.volumeInfo.categories}
                 </small>
               </Link>{" "}
@@ -175,11 +178,37 @@ const BookDetails = () => {
                 </tr>
                 <tr>
                   <td className="text-neutral-500 py-3">Category:</td>
-                  <td>{book.volumeInfo.categories || "/"}</td>
+                  <td>
+                    <Link
+                      to="/categories"
+                      onClick={() => {
+                        const cat = book.volumeInfo.categories?.[0];
+                        dispatch(setCategory(cat));
+                        handleBookFilter(dispatch, cat, "", "", "", "");
+                      }}
+                    >
+                      <span className={linkStyle}>
+                        {book.volumeInfo.categories || "/"}
+                      </span>
+                    </Link>
+                  </td>
                 </tr>
                 <tr>
                   <td className="text-neutral-500 py-3">Language:</td>
-                  <td>{book.volumeInfo.language || "/"}</td>
+                  <td>
+                    {" "}
+                    <a
+                      href={`https://www.google.com/search?q=${
+                        languages[book.volumeInfo.language]
+                      }+language`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span className={linkStyle}>
+                        {languages[book.volumeInfo.language] || "/"}
+                      </span>
+                    </a>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -190,11 +219,51 @@ const BookDetails = () => {
                   <td className="text-neutral-500 py-3 w-28 xl:w-44">
                     Author:
                   </td>
-                  <td>{book.volumeInfo.authors?.join(", ") || "/"}</td>
+                  <td>
+                    <Link
+                      to="/categories"
+                      onClick={() => {
+                        const author = book.volumeInfo.authors?.[0];
+                        dispatch(setAuthor(author));
+                        handleBookFilter(
+                          dispatch,
+                          bookFilters.category,
+                          "",
+                          "",
+                          author,
+                          ""
+                        );
+                      }}
+                    >
+                      <span className={linkStyle}>
+                        {book.volumeInfo.authors?.join(", ") || "/"}
+                      </span>
+                    </Link>
+                  </td>
                 </tr>
                 <tr>
                   <td className="text-neutral-500 py-3">Publisher:</td>
-                  <td>{book.volumeInfo.publisher || "/"}</td>
+                  <td>
+                    <Link
+                      to="/categories"
+                      onClick={() => {
+                        const publisher = book.volumeInfo.publisher;
+                        dispatch(setPublisher(publisher));
+                        handleBookFilter(
+                          dispatch,
+                          bookFilters.category,
+                          "",
+                          "",
+                          "",
+                          publisher
+                        );
+                      }}
+                    >
+                      <span className={linkStyle}>
+                        {book.volumeInfo.publisher || "/"}
+                      </span>
+                    </Link>
+                  </td>
                 </tr>
                 <tr>
                   <td className="text-neutral-500 py-3">Published:</td>
