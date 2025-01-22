@@ -17,12 +17,18 @@ import {
   setPublisher,
 } from "../redux/filtersSlice";
 import { handleBookFilter } from "../utils/filterUtils";
+import { useCustomDebounce } from "../hooks/useCustomDebounce";
 
 const Categories = () => {
   const dispatch = useDispatch<AppDispatch>();
   const books = useSelector((state: RootState) => state.googleBooks.books);
   const bookFilters = useSelector((state: RootState) => state.filters);
   const [reactSelect, setReactSelect] = useState<any>(null);
+
+  const debouncedSetTitle = useCustomDebounce(setTitle);
+  const debouncedSetAuthor = useCustomDebounce(setAuthor);
+  const debouncedSetIsbn = useCustomDebounce(setIsbn);
+  const debouncedSetPublisher = useCustomDebounce(setPublisher);
 
   const options = Object.entries(groupedCategories).map(
     ([group, categories]) => ({
@@ -89,7 +95,7 @@ const Categories = () => {
           type="text"
           placeholder="Find by title.."
           className={filters}
-          onChange={(e) => dispatch(setTitle(e.target.value))}
+          onChange={(e) => debouncedSetTitle(e.target.value)}
           onFocus={() => {
             dispatch(setAuthor(""));
             dispatch(setTitle(""));
@@ -111,7 +117,7 @@ const Categories = () => {
           type="text"
           placeholder="Find by author.."
           className={filters}
-          onChange={(e) => dispatch(setAuthor(e.target.value))}
+          onChange={(e) => debouncedSetAuthor(e.target.value)}
           onFocus={() => {
             dispatch(setTitle(""));
             dispatch(setCategory(""));
@@ -133,7 +139,7 @@ const Categories = () => {
           type="text"
           placeholder="Find by publisher.."
           className={filters}
-          onChange={(e) => dispatch(setPublisher(e.target.value))}
+          onChange={(e) => debouncedSetPublisher(e.target.value)}
           onFocus={() => {
             dispatch(setAuthor(""));
             dispatch(setTitle(""));
@@ -156,7 +162,7 @@ const Categories = () => {
           placeholder="Find by ISBN.."
           minLength={10}
           maxLength={13}
-          onChange={(e) => dispatch(setIsbn(e.target.value))}
+          onChange={(e) => debouncedSetIsbn(e.target.value)}
           onFocus={() => {
             dispatch(setPublisher(""));
             dispatch(setAuthor(""));
@@ -190,7 +196,7 @@ const Categories = () => {
       </h2>
 
       <div>
-        {books.length > 0 ? (
+        {books?.length > 0 ? (
           <div className="flex justify-center">
             <div className="w-full max-w-7xl">
               {books &&
