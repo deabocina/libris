@@ -58,12 +58,12 @@ const Search = () => {
           <img
             src={icons.menu}
             alt="Menu Icon"
-            className="md:hidden cursor-pointer"
+            className="lg:hidden cursor-pointer"
             onClick={handleMobileMenuToggle}
           />
 
           <div
-            className={`md:hidden fixed top-0 left-0 w-64 h-full z-10 bg-emerald-700 transform ${
+            className={`lg:hidden fixed top-0 left-0 w-64 h-full z-10 bg-emerald-700 transform ${
               mobileMenuToggle ? "translate-x-0" : "-translate-x-full"
             } transition-transform duration-300 ease-in-out`}
           >
@@ -84,11 +84,17 @@ const Search = () => {
                 <Link to="/about-us" className={navStyle}>
                   About Us
                 </Link>
+                <Link to="/login" className={navStyle}>
+                  Login
+                </Link>
+                <Link to="/register" className={navStyle}>
+                  Register
+                </Link>
               </div>
             </div>
           </div>
 
-          <div className="md:flex gap-10 items-center hidden">
+          <div className="lg:flex gap-10 items-center hidden">
             <Link to="/" className={navStyle}>
               Bestsellers
             </Link>
@@ -120,6 +126,15 @@ const Search = () => {
             }}
             className="w-70 h-10 pl-11 bg-transparent border-2 border-neutral-400/5 rounded-full transition-all duration-300 focus:border-emerald-500 focus:outline-none"
           />
+          <div className="ml-5 sm:flex items-center gap-2 hidden">
+            <Link to="/login" className={navStyle}>
+              Login
+            </Link>
+            {"/"}
+            <Link to="/register" className={navStyle}>
+              Register
+            </Link>
+          </div>
         </div>
       </header>
     </div>

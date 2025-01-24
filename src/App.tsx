@@ -5,6 +5,8 @@ import Categories from "./components/Categories";
 import AboutUs from "./components/AboutUs";
 import SearchResults from "./components/SearchResults";
 import BookDetails from "./components/BookDetails";
+import Register from "./components/Register";
+import Login from "./components/Login";
 
 const App = () => {
   return (
@@ -15,6 +17,8 @@ const App = () => {
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/details/:id" element={<BookDetails />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );
