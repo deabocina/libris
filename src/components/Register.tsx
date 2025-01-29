@@ -4,7 +4,7 @@ import Footer from "./Footer";
 import { icons } from "../assets/assets";
 import { db, auth, createUserWithEmailAndPassword } from "../config/firebase";
 import { setDoc, doc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
   const [name, setName] = useState<string>("");
@@ -12,10 +12,15 @@ const Register = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
   const navigate = useNavigate();
 
-  const handleRegister = async () => {
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    
     if (!name || !surname || !email || !password) {
+      setError("Please fill in all fields!");
       return;
     }
     try {
@@ -34,17 +39,13 @@ const Register = () => {
       navigate("/");
     } catch (error: any) {
       if (error.code === "auth/email-already-in-use") {
-        throw new Error("E-mail is already in use. Try logging in.");
+        setError("E-mail is already in use. Try logging in.");
       } else if (error.code === "auth/invalid-email") {
-        throw new Error("Invalid e-mail format. Please check your input.");
+        setError("Invalid e-mail format. Please check your input.");
       } else if (error.code === "auth/weak-password") {
-        throw new Error(
-          "Password is too weak. It should be at least 6 characters."
-        );
+        setError("Password is too weak. It should be at least 6 characters.");
       } else {
-        throw new Error(
-          "An error occurred during registration. Please try again."
-        );
+        setError("An error occurred during registration. Please try again.");
       }
     }
   };
@@ -54,13 +55,23 @@ const Register = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Search />
-      <>
-        <h2 className="flex flex-col justify-center items-center mb-10 mt-20 text-4xl font-bold">
+      <div className="flex flex-col justify-center items-center ">
+        <h2 className="mb-10 mt-20 text-center text-4xl font-bold">
           Register
-          <div className="w-20 bg-emerald-500 h-1 mt-3" />
+          <div className="w-20 bg-emerald-500 h-1 mt-3 mx-auto" />
         </h2>
+        <p className="mb-8">
+          Already have an account?{" "}
+          <Link to="/login">
+            {" "}
+            <span className="text-emerald-500 font-bold transition-colors duration-200 ease-in-out hover:text-emerald-700">
+              {" "}
+              Login here
+            </span>
+          </Link>
+        </p>
         <form onSubmit={handleRegister}>
-          <div className="flex flex-col gap-3 justify-center items-center">
+          <div className="flex flex-col gap-3 items-center">
             <input
               type="text"
               placeholder="John"
@@ -99,6 +110,11 @@ const Register = () => {
               onClick={() => setShowPassword(!showPassword)}
               className="cursor-pointer relative bottom-12 left-24 size-6"
             />
+            {error && (
+              <p className="text-red-600 bg-red-100 border-l-4 border-red-500 p-3 rounded-md text-sm font-medium max-w-xs text-center mt-8">
+                {error}
+              </p>
+            )}
 
             <button
               type="submit"
@@ -108,7 +124,7 @@ const Register = () => {
             </button>
           </div>
         </form>
-      </>
+      </div>
 
       <div className="flex-grow" />
       <Footer />

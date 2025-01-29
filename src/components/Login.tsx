@@ -4,20 +4,30 @@ import { useState } from "react";
 import { icons } from "../assets/assets";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../config/firebase";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/");
-    } catch (error) {
-      throw new Error("E-mail or password is not correct! Please try again.");
+    } catch (error: any) {
+      if (error.code === "auth/user-not-found") {
+        setError("No user found with this email.");
+      } else if (error.code === "auth/wrong-password") {
+        setError("Incorrect password. Please try again.");
+      } else {
+        setError("E-mail or password is not correct! Please try again.");
+      }
     }
   };
 
@@ -26,21 +36,32 @@ const Login = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Search />
-      <>
-        <h2 className="flex flex-col justify-center items-center mb-10 mt-20 text-4xl font-bold">
+      <div className="flex flex-col justify-center items-center">
+        <h2 className="text-4xl font-bold text-center mb-10 mt-20">
           Login
-          <div className="w-20 bg-emerald-500 h-1 mt-3" />
+          <div className="w-20 bg-emerald-500 h-1 mt-3 mx-auto" />
         </h2>
-        <form onSubmit={handleLogin}>
-          <div className="flex flex-col gap-3 justify-center items-center">
-            <input
-              type="text"
-              value={email}
-              placeholder="example@gmail.com"
-              className={inputForm}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+        <p className="mb-8 text-center">
+          Don't have an account?{" "}
+          <Link to="/register">
+            <span className="text-emerald-500 font-bold transition-colors duration-200 ease-in-out hover:text-emerald-700">
+              Register here
+            </span>
+          </Link>
+        </p>
+        <form
+          onSubmit={handleLogin}
+          className="flex flex-col items-center gap-3"
+        >
+          <input
+            type="text"
+            value={email}
+            placeholder="example@gmail.com"
+            className={inputForm}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               value={password}
@@ -53,18 +74,23 @@ const Login = () => {
               src={showPassword ? icons.view : icons.hide}
               alt={showPassword ? "Hide password" : "Show password"}
               onClick={() => setShowPassword(!showPassword)}
-              className="cursor-pointer relative bottom-12 left-24 size-6"
+              className="cursor-pointer absolute top-1/2 right-4 transform -translate-y-1/2 size-6"
             />
-
-            <button
-              type="submit"
-              className="bg-emerald-500 p-5 rounded-md w-64 mt-10 font-bold uppercase transition-colors duration-300 ease-in-out hover:bg-emerald-700"
-            >
-              Login
-            </button>
           </div>
+          {error && (
+            <p className="text-red-600 bg-red-100 border-l-4 border-red-500 p-3 rounded-md text-sm font-medium max-w-xs text-center mt-8">
+              {error}
+            </p>
+          )}
+          
+          <button
+            type="submit"
+            className="bg-emerald-500 p-5 rounded-md w-64 mt-10 font-bold uppercase transition-colors duration-300 ease-in-out hover:bg-emerald-700"
+          >
+            Login
+          </button>
         </form>
-      </>
+      </div>
 
       <div className="flex-grow" />
       <Footer />
