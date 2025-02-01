@@ -182,18 +182,20 @@ const Categories = () => {
         />
       </div>
 
-      <h2 className="uppercase text-xl font-bold ml-5 mt-10 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
-        {bookFilters.author
-          ? bookFilters.author
-          : bookFilters.title
-          ? bookFilters.title
-          : bookFilters.publisher
-          ? bookFilters.publisher
-          : bookFilters.isbn
-          ? ""
-          : bookFilters.category}
-        <div className="w-9 h-1 bg-emerald-500 mt-3" />
-      </h2>
+      <div className="flex flex-col justify-center items-center">
+        <h2 className="uppercase text-xl font-bold ml-5 mt-10">
+          {bookFilters.author
+            ? bookFilters.author
+            : bookFilters.title
+            ? bookFilters.title
+            : bookFilters.publisher
+            ? bookFilters.publisher
+            : bookFilters.isbn
+            ? ""
+            : bookFilters.category}
+          <div className="w-10 h-1 bg-emerald-500 mt-3 " />
+        </h2>
+      </div>
 
       <div>
         {books?.length > 0 ? (
