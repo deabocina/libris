@@ -135,7 +135,7 @@ const Homepage = () => {
             ))}
           </div>
         ) : (
-          <p className="text-center text-neutral-400">No bestsellers found.</p>
+          <p className="m-5 lg:mx-auto bg-neutral-800 text-emerald-500 rounded-md p-4 border-l-4 border-emerald-500">No bestsellers found.</p>
         )}
       </div>
       <Footer />

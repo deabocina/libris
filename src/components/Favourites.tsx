@@ -67,7 +67,9 @@ const Favourites = () => {
             </div>
           ))
         ) : (
-          <p className="m-5 lg:mx-auto">No favourites yet.</p>
+          <p className="m-5 lg:mx-auto bg-neutral-800 text-emerald-500 rounded-md p-4 border-l-4 border-emerald-500">
+            Oops, no favorites here. Start bookmarking your top picks!
+          </p>
         )}
       </div>
       <div className="flex-grow" />
