@@ -15,11 +15,15 @@ import { handleBookFilter } from "../utils/filterUtils";
 import { Link } from "react-router-dom";
 import { AppDispatch } from "../redux/store";
 import { setAuthor, setCategory, setPublisher } from "../redux/filtersSlice";
+import { auth, db } from "../config/firebase";
+import { doc, setDoc, deleteDoc, getDoc } from "firebase/firestore";
 
 const BookDetails = () => {
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [isFreeReadingAvailable, setIsFreeReadingAvailable] =
     useState<boolean>(false);
   const { id } = useParams<{ id: string }>();
+  const user = auth.currentUser;
 
   const book = useSelector(
     (state: RootState) =>
@@ -35,11 +39,45 @@ const BookDetails = () => {
     return fullStars + emptyStars;
   };
 
+  const handleBookmark = async () => {
+    if (user) {
+      const bookRef = doc(
+        db,
+        "users",
+        user.uid,
+        "favourites",
+        book?.id || "Unknown Id"
+      );
+      if (isBookmarked) {
+        await deleteDoc(bookRef);
+        setIsBookmarked(false);
+      } else {
+        await setDoc(bookRef, {
+          title: book?.volumeInfo.title,
+          author: book?.volumeInfo.authors?.join(", ") || "Unknown Author",
+          thumbnail: book?.volumeInfo.imageLinks.thumbnail,
+        });
+        setIsBookmarked(true);
+      }
+    }
+  };
+
   useEffect(() => {
     if (book) {
       handleGutenbergData(book.volumeInfo.title, setIsFreeReadingAvailable);
     }
   }, [book]);
+
+  useEffect(() => {
+    const checkIfBookmarked = async () => {
+      if (user && book) {
+        const bookRef = doc(db, "users", user.uid, "favourites", book.id);
+        const bookDoc = await getDoc(bookRef);
+        setIsBookmarked(bookDoc.exists());
+      }
+    };
+    checkIfBookmarked();
+  }, [user, book]);
 
   if (!book) {
     return <div className="text-center m-20">Book not found.</div>;
@@ -98,7 +136,7 @@ const BookDetails = () => {
                 </span>
               </p>
             </div>
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center flex-wrap gap-1">
               <>
                 {book.accessInfo.viewability !== "NO_PAGES" ? (
                   <a
@@ -127,7 +165,7 @@ const BookDetails = () => {
                 {isFreeReadingAvailable ? (
                   <button
                     onClick={() => openGutenbergLink(book.volumeInfo.title)}
-                    className="ml-5 min-w-32 bg-emerald-500 transition-all duration-300 ease-in-out hover:bg-emerald-700 p-3 rounded-lg cursor-pointer"
+                    className="ml-12 md:ml-5 min-w-32 bg-emerald-500 transition-all duration-300 ease-in-out hover:bg-emerald-700 p-3 rounded-lg cursor-pointer"
                   >
                     <div className="flex justify-center items-center">
                       <img src={icons.read} />
@@ -137,13 +175,33 @@ const BookDetails = () => {
                 ) : (
                   <button
                     disabled
-                    className="ml-5 min-w-32 bg-neutral-500 cursor-not-allowed transition-all duration-300 ease-in-out hover:bg-neutral-600 p-3 rounded-lg"
+                    className="ml-12 md:ml-5 min-w-32 bg-neutral-500 cursor-not-allowed transition-all duration-300 ease-in-out hover:bg-neutral-600 p-3 rounded-lg"
                   >
                     <div className="flex justify-center items-center">
                       <img src={icons.read} />
                       <span className="ml-2">Not Available</span>
                     </div>
                   </button>
+                )}
+              </>
+              <>
+                {user ? (
+                  <>
+                    <button
+                      onClick={handleBookmark}
+                      className="sm:ml-4 p-2 transition-transform duration-300 hover:scale-105"
+                    >
+                      <img
+                        src={
+                          isBookmarked
+                            ? icons.removeBookmark
+                            : icons.addBookmark
+                        }
+                      />
+                    </button>
+                  </>
+                ) : (
+                  <></>
                 )}
               </>
             </div>
