@@ -121,6 +121,9 @@ const Search = () => {
                 </Link>
                 {userName ? (
                   <>
+                    <Link to="/favourites" className={navStyle}>
+                      Favourites
+                    </Link>
                     <Link to="/" onClick={handleLogout} className={navStyle}>
                       Logout
                     </Link>

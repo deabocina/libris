@@ -31,6 +31,7 @@ Some books are available for free!
 - Read without limits whenever possible.
 
 ## **👤 User Account Management**
+
 Create an account or log in to keep your book collection safe and synced across devices!
 
 - Create an account to securely store your favourite books.
@@ -43,6 +44,13 @@ Never lose track of your favourite books again!
 
 - Bookmark books you love for quick access later.
 - Easily save and view all your favourite titles in one place.
+
+## **💬 Random Book Quotes (Powered by [Quotable](https://github.com/lukePeavey/quotable))**
+
+Need some literary inspiration? We’ve got you covered!
+
+- Get a random book quote whenever you want a little spark of creativity or reflection.
+- Powered by **Quotable**, an open-source project created by [Luke Peavey](https://github.com/lukePeavey), this app fetches famous quotes from authors around the world, helping you dive deeper into the magic of literature!
 
 ## **📱 Responsive Across Devices**
 
