@@ -3,7 +3,6 @@ import Search from "./Search";
 import Footer from "./Footer";
 import { collection, getDocs } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
-import { Link } from "react-router-dom";
 
 const Favourites = () => {
   const [bookmarkedBooks, setBookmarkedBooks] = useState<
@@ -53,14 +52,11 @@ const Favourites = () => {
               className="mb-5 flex flex-col justify-center items-center bg-neutral-800 rounded-lg text-center w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-4 transition-all duration-300 border-transparent hover:ring-4 hover:ring-emerald-500"
             >
               <h2 className="font-bold text-lg mb-4">{book.title}</h2>
-              <Link to={`/details/${book.id}`}>
-                {" "}
-                <img
-                  src={book.thumbnail}
-                  alt={`Cover of ${book.title}`}
-                  className="min-w-32 min-h-48 rounded-sm"
-                />
-              </Link>
+              <img
+                src={book.thumbnail}
+                alt={`Cover of ${book.title}`}
+                className="min-w-32 min-h-48 rounded-sm"
+              />
               <small className="text-sm text-neutral-500 mt-4">
                 By {book.author}
               </small>

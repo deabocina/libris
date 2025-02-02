@@ -189,7 +189,7 @@ const BookDetails = () => {
                   <>
                     <button
                       onClick={handleBookmark}
-                      className="sm:ml-4 p-2 transition-transform duration-300 hover:scale-105"
+                      className="sm:ml-4 p-1.5 transition-transform duration-300 hover:scale-105"
                     >
                       <img
                         src={
