@@ -175,7 +175,7 @@ const BookDetails = () => {
                 ) : (
                   <button
                     disabled
-                    className="ml-12 md:ml-5 min-w-32 bg-neutral-500 cursor-not-allowed transition-all duration-300 ease-in-out hover:bg-neutral-600 p-3 rounded-lg"
+                    className="ml-4 md:ml-5 min-w-32 bg-neutral-500 cursor-not-allowed transition-all duration-300 ease-in-out hover:bg-neutral-600 p-3 rounded-lg"
                   >
                     <div className="flex justify-center items-center">
                       <img src={icons.read} />

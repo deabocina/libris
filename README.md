@@ -32,6 +32,20 @@ Some books are available for free!
 - Enjoy reading books that are in the public domain or have free access.
 - Read without limits whenever possible.
 
+## **👤 User Account Management**
+Create an account or log in to keep your book collection safe and synced across devices!
+
+- Create an account to securely store your favourite books.
+- Log in to access your saved books anytime and anywhere.
+- Log out when you’re finished to ensure your privacy.
+
+## **💖 Add to Favourites**
+
+Never lose track of your favourite books again!
+
+- Bookmark books you love for quick access later.
+- Easily save and view all your favourite titles in one place.
+
 ## **📱 Responsive Across Devices**
 
 Read and browse anywhere, anytime!

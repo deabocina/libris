@@ -177,9 +177,12 @@ const Search = () => {
               <p className="text-neutral-500">Loading..</p>
             ) : userName ? (
               <>
-                <span className="font-bold text-emerald-500 bg-neutral-800/40 rounded-md p-2 mr-5">
+                <Link
+                  to="/favourites"
+                  className="font-bold text-emerald-500 bg-neutral-800/40 rounded-md p-2 mr-5 transition-transform duration-300 hover:scale-105"
+                >
                   {userName}
-                </span>
+                </Link>
                 <Link to="/" onClick={handleLogout} className={navStyle}>
                   Logout
                 </Link>

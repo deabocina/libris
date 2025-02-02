@@ -7,6 +7,7 @@ import SearchResults from "./components/SearchResults";
 import BookDetails from "./components/BookDetails";
 import Register from "./components/Register";
 import Login from "./components/Login";
+import Favourites from "./components/Favourites";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/details/:id" element={<BookDetails />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/favourites" element={<Favourites />} />
       </Routes>
     </Router>
   );
