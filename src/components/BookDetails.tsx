@@ -55,6 +55,8 @@ const BookDetails = () => {
         await setDoc(bookRef, {
           title: book?.volumeInfo.title,
           author: book?.volumeInfo.authors?.join(", ") || "Unknown Author",
+          previewLink: book?.volumeInfo.previewLink,
+          viewability: book?.accessInfo.viewability,
           thumbnail: book?.volumeInfo.imageLinks.thumbnail,
         });
         setIsBookmarked(true);
@@ -80,7 +82,11 @@ const BookDetails = () => {
   }, [user, book]);
 
   if (!book) {
-    return <div className="m-5 lg:mx-auto bg-neutral-800 text-emerald-500 rounded-md p-4 border-l-4 border-emerald-500">Book not found.</div>;
+    return (
+      <div className="m-5 lg:mx-auto bg-neutral-800 text-emerald-500 rounded-md p-4 border-l-4 border-emerald-500">
+        Book not found.
+      </div>
+    );
   }
 
   const linkStyle = `text-emerald-500 font-semibold transition-colors duration-300 ease-out hover:text-emerald-700`;
