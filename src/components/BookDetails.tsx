@@ -83,7 +83,7 @@ const BookDetails = () => {
 
   if (!book) {
     return (
-      <div className="m-5 lg:mx-auto bg-neutral-800 text-emerald-500 rounded-md p-4 border-l-4 border-emerald-500">
+      <div className="m-5 lg:mx-auto bg-neutral-800 text-emerald-500 p-4 border-l-4 border-emerald-500">
         Book not found.
       </div>
     );
