@@ -8,6 +8,9 @@ export default {
       backgroundImage: {
         homepage: "url('./assets/backgrounds/homepage.png')",
       },
+      colors: {
+        primary: "#35a46f",
+      },
     },
   },
   plugins: [],

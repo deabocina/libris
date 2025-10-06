@@ -62,219 +62,131 @@ const Categories = () => {
     bookFilters.publisher,
   ]);
 
-  const filters = `bg-neutral-800 p-3 pl-5 w-64 rounded-md transition-all duration-300 hover:bg-neutral-600 outline-none focus:ring-4 focus:ring-emerald-500`;
+  const filters =
+    "bg-white border border-gray-300 text-gray-800 placeholder-gray-500 p-3 rounded-md shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-300 w-full";
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Search />
-      <h1 className="text-3xl font-bold m-5 pt-5 md:mx-auto md:w-4/5 lg:text-center">
-        Categories
-        <div className="w-20 h-1 bg-emerald-500 mt-3 lg:mx-auto" />
-      </h1>
-
-      <div className="flex flex-wrap mt-12 m-5 gap-5 md:mx-auto md:w-4/5 items-center lg:w-3/5 xl:w-2/4">
-        <Select
-          value={reactSelect}
-          onChange={handleSelectChange}
-          onFocus={() => {
-            dispatch(setTitle(""));
-            dispatch(setAuthor(""));
-            dispatch(setCategory(""));
-            dispatch(setIsbn(""));
-            dispatch(setPublisher(""));
-          }}
-          options={options}
-          placeholder="Choose a category.."
-          isClearable={true}
-          isSearchable={true}
-          className="w-64"
-          styles={filterStyle}
-        />
-
-        <input
-          type="text"
-          placeholder="Find by title.."
-          className={filters}
-          onChange={(e) => debouncedSetTitle(e.target.value)}
-          onFocus={() => {
-            dispatch(setAuthor(""));
-            dispatch(setTitle(""));
-            dispatch(setCategory(""));
-            dispatch(setIsbn(""));
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleBookFilter(
-                dispatch,
-                bookFilters.category,
-                bookFilters.title
-              );
-            }
-          }}
-        />
-
-        <input
-          type="text"
-          placeholder="Find by author.."
-          className={filters}
-          onChange={(e) => debouncedSetAuthor(e.target.value)}
-          onFocus={() => {
-            dispatch(setTitle(""));
-            dispatch(setCategory(""));
-            dispatch(setIsbn(""));
-            dispatch(setPublisher(""));
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleBookFilter(
-                dispatch,
-                bookFilters.category,
-                bookFilters.author
-              );
-            }
-          }}
-        />
-
-        <input
-          type="text"
-          placeholder="Find by publisher.."
-          className={filters}
-          onChange={(e) => debouncedSetPublisher(e.target.value)}
-          onFocus={() => {
-            dispatch(setAuthor(""));
-            dispatch(setTitle(""));
-            dispatch(setCategory(""));
-            dispatch(setIsbn(""));
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleBookFilter(
-                dispatch,
-                bookFilters.category,
-                bookFilters.publisher
-              );
-            }
-          }}
-        />
-
-        <input
-          type="text"
-          placeholder="Find by ISBN.."
-          minLength={10}
-          maxLength={13}
-          onChange={(e) => debouncedSetIsbn(e.target.value)}
-          onFocus={() => {
-            dispatch(setPublisher(""));
-            dispatch(setAuthor(""));
-            dispatch(setTitle(""));
-            dispatch(setCategory(""));
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleBookFilter(
-                dispatch,
-                bookFilters.category,
-                bookFilters.isbn
-              );
-            }
-          }}
-          className={filters}
-        />
+    <div className="flex flex-col min-h-screen bg-gray-50 text-gray-900">
+      <div className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-sm">
+        <Search />
+        <div className="bg-emerald-800 p-10 shadow-inner">
+          <p className="text-white text-sm md:text-base leading-relaxed px-52">
+            Welcome to our book collection! Use the filters below to explore and
+            refine your search. You can select a category, or search by title,
+            author, publisher, or ISBN. These tools will help you quickly
+            discover books that match your interests, find hidden gems, and dive
+            deeper into your favorite genres. Whether you’re looking for
+            bestsellers, classics, or something entirely new, start your
+            literary journey here.
+          </p>
+        </div>
       </div>
 
-      <div className="flex flex-col justify-center items-center">
-        <h2 className="uppercase text-xl font-bold ml-5 mt-10">
-          {bookFilters.author
-            ? bookFilters.author
-            : bookFilters.title
-            ? bookFilters.title
-            : bookFilters.publisher
-            ? bookFilters.publisher
-            : bookFilters.isbn
-            ? ""
-            : bookFilters.category}
-          <div className="w-10 h-1 bg-emerald-500 mt-3 " />
-        </h2>
-      </div>
+      <div className="pt-56 px-4 lg:px-16 flex flex-col lg:flex-row gap-8 my-24">
+        <div className="flex-shrink-0 w-full lg:w-64 flex flex-col gap-4 mb-6 lg:mb-0">
+          <Select
+            value={reactSelect}
+            onChange={handleSelectChange}
+            onFocus={() => {
+              dispatch(setTitle(""));
+              dispatch(setAuthor(""));
+              dispatch(setCategory(""));
+              dispatch(setIsbn(""));
+              dispatch(setPublisher(""));
+            }}
+            options={options}
+            placeholder="Choose a category..."
+            isClearable
+            isSearchable
+            styles={filterStyle}
+          />
+          <input
+            type="text"
+            placeholder="Find by title..."
+            className={filters}
+            onChange={(e) => debouncedSetTitle(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Find by author..."
+            className={filters}
+            onChange={(e) => debouncedSetAuthor(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Find by publisher..."
+            className={filters}
+            onChange={(e) => debouncedSetPublisher(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Find by ISBN..."
+            minLength={10}
+            maxLength={13}
+            className={filters}
+            onChange={(e) => debouncedSetIsbn(e.target.value)}
+          />
+        </div>
 
-      <div>
-        {books?.length > 0 ? (
-          <div className="flex justify-center">
-            <div className="w-full max-w-7xl">
-              {books &&
-                books.map((book) => (
-                  <div key={book.id}>
-                    {book.volumeInfo.title &&
-                      book.volumeInfo.pageCount > 0 &&
-                      book.volumeInfo.categories && (
-                        <div className="flex m-5 p-3 transition-colors duration-200 ease-in-out rounded-md hover:bg-neutral-800 md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
-                          <div className="basis-32">
-                            <Link to={`/details/${book.id}`}>
-                              {" "}
-                              <img
-                                src={book.volumeInfo.imageLinks?.smallThumbnail}
-                                alt={`Cover of ${book.volumeInfo.title}`}
-                                className="min-w-32 min-h-48 transition-transform duration-300 hover:scale-110 rounded-sm"
-                              />
-                            </Link>
-                          </div>
-
-                          <div className="ml-5 basis-4/5">
-                            <Link to={`/details/${book.id}`}>
-                              <h2 className="text-2xl font-bold relative group">
-                                {book.volumeInfo.title}
-                                <span className="absolute bottom-0 left-0 w-0 h-1 bg-emerald-500 transition-all duration-300 group-hover:w-full" />
-                              </h2>
-                            </Link>
-                            <div className="text-neutral-500">
-                              <Link
-                                to=""
-                                onClick={() => {
-                                  const author = book.volumeInfo.authors?.[0];
-                                  dispatch(setAuthor(author));
-                                  handleBookFilter(
-                                    dispatch,
-                                    bookFilters.category,
-                                    "",
-                                    "",
-                                    author,
-                                    ""
-                                  );
-                                }}
-                              >
-                                <small>
-                                  By{" "}
-                                  <span className="text-emerald-500 font-semibold transition-colors duration-300 ease-out hover:text-emerald-700">
-                                    {book.volumeInfo.authors?.join(", ") ||
-                                      "Unknown Author"}
-                                  </span>
-                                </small>
-                              </Link>{" "}
-                              · <small>{book.volumeInfo.pageCount} pages</small>
-                            </div>
-                            <p className="mt-3 book-description">
-                              {parse(
-                                book.searchInfo?.textSnippet ||
-                                  book.volumeInfo.description ||
-                                  "Summary unavailable."
-                              )}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                  </div>
-                ))}
+        <div className="flex-1">
+          {books?.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {books.map(
+                (book) =>
+                  book.volumeInfo.title &&
+                  book.volumeInfo.pageCount > 0 &&
+                  book.volumeInfo.categories && (
+                    <div
+                      key={book.id}
+                      className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition p-4 flex flex-col"
+                    >
+                      <Link to={`/details/${book.id}`}>
+                        <img
+                          src={
+                            book.volumeInfo.imageLinks?.thumbnail ||
+                            "/default-book.jpg"
+                          }
+                          alt={book.volumeInfo.title}
+                          className="w-full rounded-lg h-60 object-contain mb-2 transform hover:scale-110 transition-transform ease-in-out"
+                        />
+                      </Link>
+                      <Link to={`/details/${book.id}`}>
+                        <h3 className="text-lg font-bold mb-1 text-emerald-700 hover:text-emerald-800 transition">
+                          {book.volumeInfo.title}
+                        </h3>
+                      </Link>
+                      <p className="text-sm text-gray-600 mb-1">
+                        by{" "}
+                        <span className="text-emerald-600 font-medium hover:text-emerald-700 cursor-pointer">
+                          {book.volumeInfo.authors?.join(", ") ||
+                            "Unknown Author"}
+                        </span>
+                      </p>
+                      <p className="text-xs text-gray-500 mb-2">
+                        {book.volumeInfo.pageCount} pages ·{" "}
+                        {book.volumeInfo.publisher || "Unknown Publisher"}
+                      </p>
+                      <p className="text-sm text-gray-700 line-clamp-6">
+                        {parse(
+                          book.searchInfo?.textSnippet ||
+                            book.volumeInfo.description ||
+                            "Summary unavailable."
+                        )}
+                      </p>
+                    </div>
+                  )
+              )}
             </div>
-          </div>
-        ) : (
-          <div className="text-center my-14">
-            <span className="p-4 rounded-lg mx-auto bg-emerald-500 font-bold">
-              No Results found.
-            </span>
-          </div>
-        )}
+          ) : (
+            <div className="text-center my-14">
+              <span className="px-6 py-3 rounded-lg bg-emerald-500 text-white font-bold shadow">
+                No results found.
+              </span>
+            </div>
+          )}
+        </div>
       </div>
-      <div className="flex-grow" />
+
       <Footer />
     </div>
   );

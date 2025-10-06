@@ -9,8 +9,7 @@ import {
   setError,
 } from "../redux/searchSlice";
 import { fetchGoogleBooks } from "../services/googleBooksServices";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { auth, db } from "../config/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -24,15 +23,19 @@ const Search = () => {
   const navigate = useNavigate();
 
   const handleSearch = async () => {
+    if (localQuery.trim() === "") {
+      alert("Search query cannot be empty!");
+      return;
+    }
+
     dispatch(setLoading(true));
     dispatch(setResults([]));
+    dispatch(setQuery(localQuery));
+
     try {
       const data = await fetchGoogleBooks(localQuery);
-      if (data && data.length > 0) {
-        dispatch(setResults(data));
-      } else {
-        dispatch(setError("No results found."));
-      }
+      if (data && data.length > 0) dispatch(setResults(data));
+      else dispatch(setError("No results found."));
     } catch (error) {
       dispatch(setError(`Error: ${error}`));
     } finally {
@@ -41,17 +44,7 @@ const Search = () => {
     }
   };
 
-  const checkSearchInput = () => {
-    if (localQuery.trim() === "") {
-      alert("Search query cannot be empty!");
-      return;
-    }
-    handleSearch();
-  };
-
-  const handleMobileMenuToggle = () => {
-    setMobileMenuToggle(!mobileMenuToggle);
-  };
+  const handleMobileMenuToggle = () => setMobileMenuToggle(!mobileMenuToggle);
 
   const handleLogout = async () => {
     try {
@@ -59,7 +52,7 @@ const Search = () => {
       setUserName(null);
       navigate("/");
     } catch (error) {
-      setError(`Login failed! ${error}`);
+      setError(`Logout failed! ${error}`);
     }
   };
 
@@ -80,127 +73,134 @@ const Search = () => {
       }
       setLoadingPage(false);
     });
-    return () => unsub(); // Cleanup function
+    return () => unsub();
   }, []);
 
   const navStyle =
-    "border-b-4 border-transparent transition-all duration-300 ease-in-out hover:border-emerald-500";
+    "text-white hover:text-white/80 transition-all duration-300 border-b-2 border-transparent hover:border-white/50";
 
   return (
     <div>
-      <header className="flex justify-evenly relative pt-5 uppercase">
-        <nav className="flex gap-10 items-center">
+      <header className="bg-[#35a46f] text-white flex justify-between items-center px-6 py-4 relative shadow-md">
+        <div className="flex items-center gap-4">
+          <a href="/libris/">
+            <img
+              src={icons.logo}
+              alt="Logo"
+              className="w-16 lg:w-20 hover:scale-110 duration-300 ease-in-out "
+            />
+          </a>
+        </div>
+
+        <nav className="hidden lg:flex gap-8 items-center">
+          <Link to="/" className={navStyle}>
+            Bestsellers
+          </Link>
+          <Link to="/categories" className={navStyle}>
+            Categories
+          </Link>
+          <Link to="/about-us" className={navStyle}>
+            About Us
+          </Link>
+        </nav>
+
+        <div className="lg:hidden flex items-center">
           <img
             src={icons.menu}
             alt="Menu Icon"
-            className="lg:hidden cursor-pointer"
+            className="cursor-pointer"
             onClick={handleMobileMenuToggle}
           />
+        </div>
 
-          <div
-            className={`lg:hidden fixed top-0 left-0 w-64 h-full z-10 bg-emerald-700 transform ${
-              mobileMenuToggle ? "translate-x-0" : "-translate-x-full"
-            } transition-transform duration-300 ease-in-out`}
-          >
-            <div className="p-5">
-              <button
-                onClick={handleMobileMenuToggle}
-                className="bg-neutral-900 rounded-full p-2 hover:animate-pulse"
-              >
-                <img src={icons.leftArrow} className="w-6 h-6" />
-              </button>
-              <div className="flex flex-col p-5">
-                <Link to="/" className={navStyle}>
-                  Bestsellers
-                </Link>
-                <Link to="/categories" className={navStyle}>
-                  Categories
-                </Link>
-                <Link to="/about-us" className={navStyle}>
-                  About Us
-                </Link>
-                {userName ? (
-                  <>
-                    <Link to="/favourites" className={navStyle}>
-                      Favourites
-                    </Link>
-                    <Link to="/" onClick={handleLogout} className={navStyle}>
-                      Logout
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link to="/login" className={navStyle}>
-                      Login
-                    </Link>
-                    <Link to="/register" className={navStyle}>
-                      Register
-                    </Link>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:flex gap-10 items-center hidden">
-            <Link to="/" className={navStyle}>
-              Bestsellers
-            </Link>
-            <Link to="/categories" className={navStyle}>
-              Categories
-            </Link>
-            <Link to="/about-us" className={navStyle}>
-              About Us
-            </Link>
-          </div>
-        </nav>
-
-        <div className="flex">
-          <button onClick={checkSearchInput}>
-            <div className="w-8 h-8 bg-emerald-500 rounded-full flex justify-center items-center relative left-9 transition-all duration-300 ease-in-out hover:bg-emerald-600">
-              <img src={icons.search} className="w-5 h-5 object-cover" />
-            </div>
-          </button>
-
+        <div className="relative flex items-center ml-4">
           <input
             type="search"
-            placeholder="Search books.."
+            placeholder="Search books..."
+            value={localQuery}
             onChange={(e) => setLocalQuery(e.target.value)}
             onKeyUp={(e) => {
-              if (e.key === "Enter") {
-                checkSearchInput();
-                dispatch(setQuery(localQuery));
-              }
+              if (e.key === "Enter") handleSearch();
             }}
-            className="w-70 h-10 pl-11 bg-transparent border-2 border-neutral-400/5 rounded-full transition-all duration-300 focus:border-emerald-500 focus:outline-none"
+            className="pl-10 pr-4 py-2 rounded-full border border-white/20 bg-white/10 placeholder-white/70 text-white focus:outline-none focus:border-white focus:bg-white/20 transition"
           />
+          <button
+            onClick={handleSearch}
+            className="absolute left-1 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white/20 rounded-full hover:bg-white/30 transition"
+          >
+            <img src={icons.search} alt="Search" className="w-4 h-4" />
+          </button>
+        </div>
 
-          <div className="ml-5 sm:flex items-center gap-2 hidden">
-            {loadingPage ? (
-              <p className="text-neutral-500">Loading..</p>
-            ) : userName ? (
-              <>
-                <Link
-                  to="/favourites"
-                  className="font-bold text-emerald-500 bg-neutral-800/40 rounded-md p-2 mr-5 transition-transform duration-300 hover:scale-105"
-                >
-                  {userName}
-                </Link>
-                <Link to="/" onClick={handleLogout} className={navStyle}>
-                  Logout
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className={navStyle}>
-                  Login
-                </Link>
-                {"/"}
-                <Link to="/register" className={navStyle}>
-                  Register
-                </Link>
-              </>
-            )}
+        <div className="hidden sm:flex items-center gap-4 ml-6">
+          {loadingPage ? (
+            <p className="text-white/70">Loading..</p>
+          ) : userName ? (
+            <>
+              <Link
+                to="/favourites"
+                className="font-bold bg-white/20 px-3 py-1 rounded hover:bg-white/30 transition"
+              >
+                {userName}
+              </Link>
+              <Link to="/" onClick={handleLogout} className={navStyle}>
+                Logout
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className={navStyle}>
+                Login
+              </Link>
+              <Link to="/register" className={navStyle}>
+                Register
+              </Link>
+            </>
+          )}
+        </div>
+
+        <div
+          className={`lg:hidden fixed top-0 left-0 w-64 h-full z-20 bg-[#35a46f] transform ${
+            mobileMenuToggle ? "translate-x-0" : "-translate-x-full"
+          } transition-transform duration-300 ease-in-out`}
+        >
+          <div className="p-5">
+            <button
+              onClick={handleMobileMenuToggle}
+              className="bg-white/20 rounded-full p-2 hover:animate-pulse"
+            >
+              <img src={icons.leftArrow} className="w-6 h-6" alt="Back" />
+            </button>
+            <div className="flex flex-col p-5 gap-4">
+              <Link to="/" className={navStyle}>
+                Bestsellers
+              </Link>
+              <Link to="/categories" className={navStyle}>
+                Categories
+              </Link>
+              <Link to="/about-us" className={navStyle}>
+                About Us
+              </Link>
+              {userName ? (
+                <>
+                  <Link to="/favourites" className={navStyle}>
+                    Favourites
+                  </Link>
+                  <Link to="/" onClick={handleLogout} className={navStyle}>
+                    Logout
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" className={navStyle}>
+                    Login
+                  </Link>
+                  <Link to="/register" className={navStyle}>
+                    Register
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </header>

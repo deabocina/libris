@@ -37,7 +37,6 @@ const Favourites = () => {
         );
         const bookmarkDoc = bookmarkRef.docs.map((doc) => {
           const data = doc.data();
-
           return {
             id: doc.id,
             title: data.title,
@@ -54,66 +53,60 @@ const Favourites = () => {
   }, [user]);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gray-50 text-gray-900">
       <Search />
-      <h1 className="text-3xl font-bold m-5 pt-5 md:mx-auto md:w-4/5 lg:text-center">
+      <h1 className="text-3xl font-bold m-5 pt-5 md:mx-auto md:w-4/5 lg:text-center text-emerald-700">
         Favourites
         <div className="w-20 h-1 bg-emerald-500 mt-3 lg:mx-auto" />
       </h1>
-      <div className="flex flex-wrap justify-center mx-5 mt-12 gap-8">
+
+      <div className="flex flex-wrap justify-center mx-5 mt-12 gap-6">
         {bookmarkedBooks.length > 0 ? (
           bookmarkedBooks.map((book) => (
             <div
               key={book.id}
-              className="mb-5 flex flex-col justify-center items-center bg-neutral-800 rounded-lg text-center w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-4 transition-all duration-300 border-transparent hover:ring-4 hover:ring-emerald-500"
+              className="mb-12 flex flex-col justify-center items-center bg-white rounded-xl text-center w-full sm:w-1/3 md:w-48 p-3 transition-all duration-300 hover:scale-105 hover:shadow-lg border border-transparent hover:border-emerald-500"
             >
-              <h2 className="font-bold text-lg mb-4">{book.title}</h2>
-              <div className="relative">
+              <h2 className="font-bold text-base mb-2 text-emerald-700">
+                {book.title}
+              </h2>
+              <div className="relative w-28 h-40 mb-2">
                 <img
-                  src={book.thumbnail}
+                  src={book.thumbnail || "/default-book.jpg"}
                   alt={`Cover of ${book.title}`}
-                  className="min-w-32 min-h-48 rounded-sm"
+                  className="w-full h-full object-cover rounded-lg transition-transform duration-300 hover:scale-105"
                 />
                 <button
                   onClick={() => handleRemoveBookmark(book.id)}
-                  className="absolute bottom-2 right-3 transition-transform duration-300 hover:scale-105 bg-white rounded-full p-1"
+                  className="absolute bottom-1 right-1 bg-white rounded-full p-1 shadow hover:scale-110 transition-transform duration-300"
                 >
-                  <img src={icons.removeBookmark} className="w-6 h-6" />
+                  <img src={icons.removeBookmark} className="w-4 h-4" />
                 </button>
               </div>
-              <small className="text-sm text-neutral-500 my-4">
+              <small className="text-xs text-gray-500 mb-2">
                 By {book.author}
               </small>
-
-              <>
-                {book.viewability !== "NO_PAGES" ? (
-                  <a
-                    href={book.previewLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-emerald-500 min-w-32 transition-all duration-300 ease-in-out hover:bg-emerald-700 p-3 rounded-lg cursor-pointer"
-                  >
-                    <div className="flex justify-center items-center">
-                      {" "}
-                      <img src={icons.search} />
-                      <span className="ml-1">Preview</span>
-                    </div>
-                  </a>
-                ) : (
-                  <a className="bg-neutral-500 cursor-not-allowed min-w-32 transition-all duration-300 ease-in-out hover:bg-neutral-600 p-3 rounded-lg">
-                    <div className="flex justify-center items-center">
-                      {" "}
-                      <img src={icons.search} />
-                      <span className="ml-1">Not Available</span>
-                    </div>
-                  </a>
-                )}
-              </>
+              {book.viewability !== "NO_PAGES" ? (
+                <a
+                  href={book.previewLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-emerald-500 w-full text-center py-1.5 rounded-lg text-white font-semibold hover:bg-emerald-700 transition-colors duration-300 text-sm"
+                >
+                  Preview
+                </a>
+              ) : (
+                <span className="bg-gray-400 w-full text-center py-1.5 rounded-lg text-gray-200 text-sm cursor-not-allowed">
+                  Not Available
+                </span>
+              )}
             </div>
           ))
         ) : (
-          <p className="m-5 lg:mx-auto bg-neutral-800 text-emerald-500 p-4 border-l-4 border-emerald-500">
-            Oops, no favorites here. Start bookmarking your top picks!
+          <p className="m-5 lg:mx-auto bg-white text-gray-700 p-4 border-l-4 border-emerald-500 rounded-md shadow-md">
+            Oops, no favorites here. Start bookmarking your top picks to see
+            them here. Use the search or filters to explore and discover books
+            that match your interests and add them to your favorites list!
           </p>
         )}
       </div>

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { RootState, AppDispatch } from "../redux/store";
 import { icons } from "../assets/assets";
 import Search from "./Search";
 import Footer from "./Footer";
@@ -13,24 +13,21 @@ import { getFormattedDate } from "../utils/dateUtils";
 import { languages } from "../data/languages";
 import { handleBookFilter } from "../utils/filterUtils";
 import { Link } from "react-router-dom";
-import { AppDispatch } from "../redux/store";
-import { setAuthor, setCategory, setPublisher } from "../redux/filtersSlice";
+import { setAuthor, setCategory } from "../redux/filtersSlice";
 import { auth, db } from "../config/firebase";
 import { doc, setDoc, deleteDoc, getDoc } from "firebase/firestore";
 
 const BookDetails = () => {
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
-  const [isFreeReadingAvailable, setIsFreeReadingAvailable] =
-    useState<boolean>(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isFreeReadingAvailable, setIsFreeReadingAvailable] = useState(false);
   const { id } = useParams<{ id: string }>();
   const user = auth.currentUser;
-
+  const bookFilters = useSelector((state: RootState) => state.filters);
   const book = useSelector(
     (state: RootState) =>
-      state.googleBooks.books.find((book) => book.id === id) ||
-      state.search.results.find((book) => book.id === id)
+      state.googleBooks.books.find((b) => b.id === id) ||
+      state.search.results.find((b) => b.id === id)
   );
-  const bookFilters = useSelector((state: RootState) => state.filters);
   const dispatch = useDispatch<AppDispatch>();
 
   const generateStars = (rating: number, totalStars = 5) => {
@@ -40,65 +37,68 @@ const BookDetails = () => {
   };
 
   const handleBookmark = async () => {
-    if (user) {
-      const bookRef = doc(
-        db,
-        "users",
-        user.uid,
-        "favourites",
-        book?.id || "Unknown Id"
-      );
-      if (isBookmarked) {
-        await deleteDoc(bookRef);
-        setIsBookmarked(false);
-      } else {
-        await setDoc(bookRef, {
-          title: book?.volumeInfo.title,
-          author: book?.volumeInfo.authors?.join(", ") || "Unknown Author",
-          previewLink: book?.volumeInfo.previewLink,
-          viewability: book?.accessInfo.viewability,
-          thumbnail: book?.volumeInfo.imageLinks.thumbnail,
-        });
-        setIsBookmarked(true);
-      }
+    if (!user || !book) return;
+    const bookRef = doc(db, "users", user.uid, "favourites", book.id);
+    if (isBookmarked) {
+      await deleteDoc(bookRef);
+      setIsBookmarked(false);
+    } else {
+      await setDoc(bookRef, {
+        title: book.volumeInfo.title,
+        author: book.volumeInfo.authors?.join(", ") || "Unknown Author",
+        previewLink: book.volumeInfo.previewLink,
+        viewability: book.accessInfo.viewability,
+        thumbnail: book.volumeInfo.imageLinks?.thumbnail,
+      });
+      setIsBookmarked(true);
     }
   };
 
   useEffect(() => {
-    if (book) {
+    if (book)
       handleGutenbergData(book.volumeInfo.title, setIsFreeReadingAvailable);
-    }
   }, [book]);
 
   useEffect(() => {
-    const checkIfBookmarked = async () => {
-      if (user && book) {
-        const bookRef = doc(db, "users", user.uid, "favourites", book.id);
-        const bookDoc = await getDoc(bookRef);
-        setIsBookmarked(bookDoc.exists());
-      }
+    const checkBookmark = async () => {
+      if (!user || !book) return;
+      const bookRef = doc(db, "users", user.uid, "favourites", book.id);
+      const bookDoc = await getDoc(bookRef);
+      setIsBookmarked(bookDoc.exists());
     };
-    checkIfBookmarked();
+    checkBookmark();
   }, [user, book]);
 
-  if (!book) {
+  if (!book)
     return (
-      <div className="m-5 lg:mx-auto bg-neutral-800 text-emerald-500 p-4 border-l-4 border-emerald-500">
+      <div className="m-5 md:mx-auto md:w-4/5 lg:w-3/5 bg-white p-4 border-l-4 border-emerald-500 text-emerald-600 rounded shadow">
         Book not found.
       </div>
     );
-  }
 
-  const linkStyle = `text-emerald-500 font-semibold transition-colors duration-300 ease-out hover:text-emerald-700`;
+  const linkStyle =
+    "text-emerald-600 font-semibold hover:text-emerald-800 transition";
 
   return (
-    <>
-      <Search />
-      <div className="mt-20 mx-5">
-        <div className="flex mb-16 bg-neutral-800 p-5 rounded-lg shadow-lg md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4 justify-center items-center ">
-          <div className="basis-4/5">
-            <h1 className="text-3xl font-bold">{book.volumeInfo.title}</h1>
-            <div className="text-neutral-500 mb-10">
+    <div className="flex flex-col min-h-screen bg-gray-50 text-gray-900">
+      <div className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-sm">
+        <Search />
+      </div>
+
+      <div className="pt-28 px-4 md:px-16 flex flex-col gap-12">
+        {/* Book Header */}
+        <div className="bg-white p-6 rounded-xl shadow-md flex flex-col md:flex-row gap-6 md:gap-8 w-full md:w-4/5 lg:w-3/5 mx-auto">
+          <img
+            src={book.volumeInfo.imageLinks?.thumbnail || "/default-book.jpg"}
+            alt={book.volumeInfo.title}
+            className="w-40 h-56 object-cover rounded-md mx-auto md:mx-0 transform transition-transform duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-lg"
+          />
+          <div className="flex-1 mt-4 md:mt-0">
+            <h1 className="text-3xl font-bold text-emerald-700 mb-2">
+              {book.volumeInfo.title}
+            </h1>
+            <p className="text-gray-600 mb-3">
+              by{" "}
               <Link
                 to="/categories"
                 onClick={() => {
@@ -113,13 +113,9 @@ const BookDetails = () => {
                     ""
                   );
                 }}
+                className={linkStyle}
               >
-                <small>
-                  By{" "}
-                  <span className={linkStyle}>
-                    {book.volumeInfo.authors?.join(", ") || "Unknown Author"}{" "}
-                  </span>
-                </small>
+                {book.volumeInfo.authors?.join(", ") || "Unknown Author"}
               </Link>{" "}
               ·{" "}
               <Link
@@ -129,208 +125,116 @@ const BookDetails = () => {
                   dispatch(setCategory(cat));
                   handleBookFilter(dispatch, cat, "", "", "", "");
                 }}
+                className={linkStyle}
               >
-                <small className={linkStyle}>
-                  {book.volumeInfo.categories}
-                </small>
+                {book.volumeInfo.categories || "Unknown Category"}
               </Link>{" "}
-              · <small>{book.volumeInfo.pageCount} pages</small>
-              <p className="text-yellow-500 text-2xl">
-                {generateStars(book?.volumeInfo.averageRating || 0)}
-                <span className="text-white text-lg">
-                  ({book.volumeInfo.ratingsCount || 0})
-                </span>
-              </p>
-            </div>
-            <div className="flex justify-center items-center flex-wrap gap-1">
-              <>
-                {book.accessInfo.viewability !== "NO_PAGES" ? (
-                  <a
-                    href={book.volumeInfo.previewLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-emerald-500 min-w-32 transition-all duration-300 ease-in-out hover:bg-emerald-700 p-3 rounded-lg cursor-pointer"
-                  >
-                    <div className="flex justify-center items-center">
-                      {" "}
-                      <img src={icons.search} />
-                      <span className="ml-1">Preview</span>
-                    </div>
-                  </a>
-                ) : (
-                  <a className="bg-neutral-500 cursor-not-allowed min-w-32 transition-all duration-300 ease-in-out hover:bg-neutral-600 p-3 rounded-lg">
-                    <div className="flex justify-center items-center">
-                      {" "}
-                      <img src={icons.search} />
-                      <span className="ml-1">Not Available</span>
-                    </div>
-                  </a>
-                )}
-              </>
-              <>
-                {isFreeReadingAvailable ? (
-                  <button
-                    onClick={() => openGutenbergLink(book.volumeInfo.title)}
-                    className="ml-12 md:ml-5 min-w-32 bg-emerald-500 transition-all duration-300 ease-in-out hover:bg-emerald-700 p-3 rounded-lg cursor-pointer"
-                  >
-                    <div className="flex justify-center items-center">
-                      <img src={icons.read} />
-                      <span className="ml-2">Read</span>
-                    </div>
-                  </button>
-                ) : (
-                  <button
-                    disabled
-                    className="ml-4 md:ml-5 min-w-32 bg-neutral-500 cursor-not-allowed transition-all duration-300 ease-in-out hover:bg-neutral-600 p-3 rounded-lg"
-                  >
-                    <div className="flex justify-center items-center">
-                      <img src={icons.read} />
-                      <span className="ml-2">Not Available</span>
-                    </div>
-                  </button>
-                )}
-              </>
-              <>
-                {user ? (
-                  <>
-                    <button
-                      onClick={handleBookmark}
-                      className="sm:ml-4 p-1.5 transition-transform duration-300 hover:scale-105"
-                    >
-                      <img
-                        src={
-                          isBookmarked
-                            ? icons.removeBookmark
-                            : icons.addBookmark
-                        }
-                      />
-                    </button>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </>
+              · {book.volumeInfo.pageCount || "/"} pages
+            </p>
+            <p className="text-yellow-500 text-xl mb-4">
+              {generateStars(book.volumeInfo.averageRating || 0)}{" "}
+              <span className="text-gray-500 text-sm">
+                ({book.volumeInfo.ratingsCount || 0})
+              </span>
+            </p>
+
+            <div className="flex flex-wrap gap-3">
+              {/* Preview Button */}
+              <a
+                href={book.volumeInfo.previewLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition ${
+                  book.accessInfo.viewability !== "NO_PAGES"
+                    ? "bg-emerald-500 text-white hover:bg-emerald-700"
+                    : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                }`}
+              >
+                <img src={icons.search} />
+                Preview
+              </a>
+
+              {/* Read Gutenberg */}
+              <button
+                onClick={() =>
+                  isFreeReadingAvailable &&
+                  openGutenbergLink(book.volumeInfo.title)
+                }
+                disabled={!isFreeReadingAvailable}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition ${
+                  isFreeReadingAvailable
+                    ? "bg-emerald-500 text-white hover:bg-emerald-700"
+                    : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                }`}
+              >
+                <img src={icons.read} />
+                Read
+              </button>
+
+              {/* Bookmark */}
+              {user && (
+                <button
+                  onClick={handleBookmark}
+                  className="p-2 hover:scale-110 transition-transform rounded-full border border-gray-300"
+                >
+                  <img
+                    src={
+                      isBookmarked ? icons.removeBookmark : icons.addBookmark
+                    }
+                  />
+                </button>
+              )}
             </div>
           </div>
-          <>
-            {" "}
-            <img
-              src={book.volumeInfo.imageLinks?.thumbnail}
-              alt={`Cover of ${book.volumeInfo.title}`}
-              className="ml-5 rounded-sm translate-transform duration-300 ease-in-out hover:scale-110"
-            />
-          </>
         </div>
 
-        <div className="md:mx-auto md:w-4/5 lg:w-3/5 xl:w-2/4">
-          <h3 className="my-5 text-xl font-bold translate-transform duration-500 ease-in-out hover:translate-x-3">
-            Description <div className="w-20 h-1 bg-emerald-500 mt-2" />
-          </h3>
-          <p>{book.volumeInfo.description || "No description available."}</p>
+        {/* Description */}
+        <div className="md:w-4/5 lg:w-3/5 md:mx-auto bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-xl font-bold text-emerald-700 mb-2">
+            Description
+            <div className="w-20 h-1 bg-emerald-500 mt-2" />
+          </h2>
+          <p className="text-gray-700">
+            {book.volumeInfo.description || "No description available."}
+          </p>
+        </div>
 
-          <h3 className="mt-10 mb-5 text-xl font-bold translate-transform duration-500 ease-in-out hover:translate-x-3">
-            About this edition <div className="w-20 h-1 bg-emerald-500 mt-2" />
-          </h3>
-          <div className="flex w-full">
-            <table className="w-1/2 flex-grow">
+        {/* Book Edition Info */}
+        <div className="md:w-4/5 lg:w-3/5 md:mx-auto bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-xl font-bold text-emerald-700 mb-4">
+            About this edition
+            <div className="w-20 h-1 bg-emerald-500 mt-2" />
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-600">
+            <table className="w-full">
               <tbody>
                 <tr>
-                  <td className="text-neutral-500 py-3 w-28 xl:w-44">
-                    Page count:
-                  </td>
+                  <td className="py-2 font-medium">Page count:</td>
                   <td>{book.volumeInfo.pageCount || "/"}</td>
                 </tr>
                 <tr>
-                  <td className="text-neutral-500 py-3">Category:</td>
-                  <td>
-                    <Link
-                      to="/categories"
-                      onClick={() => {
-                        const cat = book.volumeInfo.categories?.[0];
-                        dispatch(setCategory(cat));
-                        handleBookFilter(dispatch, cat, "", "", "", "");
-                      }}
-                    >
-                      <span className={linkStyle}>
-                        {book.volumeInfo.categories || "/"}
-                      </span>
-                    </Link>
-                  </td>
+                  <td className="py-2 font-medium">Category:</td>
+                  <td>{book.volumeInfo.categories || "/"}</td>
                 </tr>
                 <tr>
-                  <td className="text-neutral-500 py-3">Language:</td>
-                  <td>
-                    {" "}
-                    <a
-                      href={`https://www.google.com/search?q=${
-                        languages[book.volumeInfo.language]
-                      }+language`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <span className={linkStyle}>
-                        {languages[book.volumeInfo.language] || "/"}
-                      </span>
-                    </a>
-                  </td>
+                  <td className="py-2 font-medium">Language:</td>
+                  <td>{languages[book.volumeInfo.language] || "/"}</td>
                 </tr>
               </tbody>
             </table>
 
-            <table className="w-1/3 flex-grow ml-auto">
+            <table className="w-full">
               <tbody>
                 <tr>
-                  <td className="text-neutral-500 py-3 w-28 xl:w-44">
-                    Author:
-                  </td>
-                  <td>
-                    <Link
-                      to="/categories"
-                      onClick={() => {
-                        const author = book.volumeInfo.authors?.[0];
-                        dispatch(setAuthor(author));
-                        handleBookFilter(
-                          dispatch,
-                          bookFilters.category,
-                          "",
-                          "",
-                          author,
-                          ""
-                        );
-                      }}
-                    >
-                      <span className={linkStyle}>
-                        {book.volumeInfo.authors?.join(", ") || "/"}
-                      </span>
-                    </Link>
-                  </td>
+                  <td className="py-2 font-medium">Author:</td>
+                  <td>{book.volumeInfo.authors?.join(", ") || "/"}</td>
                 </tr>
                 <tr>
-                  <td className="text-neutral-500 py-3">Publisher:</td>
-                  <td>
-                    <Link
-                      to="/categories"
-                      onClick={() => {
-                        const publisher = book.volumeInfo.publisher;
-                        dispatch(setPublisher(publisher));
-                        handleBookFilter(
-                          dispatch,
-                          bookFilters.category,
-                          "",
-                          "",
-                          "",
-                          publisher
-                        );
-                      }}
-                    >
-                      <span className={linkStyle}>
-                        {book.volumeInfo.publisher || "/"}
-                      </span>
-                    </Link>
-                  </td>
+                  <td className="py-2 font-medium">Publisher:</td>
+                  <td>{book.volumeInfo.publisher || "/"}</td>
                 </tr>
                 <tr>
-                  <td className="text-neutral-500 py-3">Published:</td>
+                  <td className="py-2 font-medium">Published:</td>
                   <td>
                     {getFormattedDate(book.volumeInfo.publishedDate) || "/"}
                   </td>
@@ -338,23 +242,32 @@ const BookDetails = () => {
               </tbody>
             </table>
           </div>
+        </div>
 
-          <h3 className="mt-10 mb-5 text-xl font-bold translate-transform duration-500 ease-in-out hover:translate-x-3">
-            Identifiers <div className="w-20 h-1 bg-emerald-500 mt-2" />
-          </h3>
-          {book.volumeInfo.industryIdentifiers?.map((book, index) => (
-            <div
-              key={index}
-              className="bg-neutral-800 p-4 rounded-md shadow-md mb-2 flex justify-between items-center translate-transform duration-200 ease-out hover:scale-105"
-            >
-              <span className="text-emerald-500 font-bold">{book.type}:</span>
-              <span>{book.identifier}</span>
-            </div>
-          )) || <p>No identifiers available.</p>}
+        {/* Identifiers */}
+        <div className="md:w-4/5 lg:w-3/5 md:mx-auto mb-10">
+          <h2 className="text-xl font-bold text-emerald-700 mb-4">
+            Identifiers
+            <div className="w-20 h-1 bg-emerald-500 mt-2" />
+          </h2>
+          <div className="flex flex-col gap-2">
+            {book.volumeInfo.industryIdentifiers?.map((idItem, idx) => (
+              <div
+                key={idx}
+                className="flex justify-between bg-white p-3 rounded-md shadow hover:scale-105 transition-transform"
+              >
+                <span className="font-semibold text-emerald-600">
+                  {idItem.type}:
+                </span>
+                <span>{idItem.identifier}</span>
+              </div>
+            )) || <p>No identifiers available.</p>}
+          </div>
         </div>
       </div>
+
       <Footer />
-    </>
+    </div>
   );
 };
 
