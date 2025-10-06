@@ -42,7 +42,7 @@ const Categories = () => {
 
   const handleSelectChange = (selectedOption: any) => {
     setReactSelect(selectedOption);
-    dispatch(setCategory(selectedOption.value));
+    dispatch(setCategory(selectedOption?.value || ""));
   };
 
   useEffect(() => {
@@ -67,10 +67,10 @@ const Categories = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 text-gray-900">
-      <div className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-sm">
+      <div className="fixed top-0 left-0 w-full z-50 shadow-sm bg-white/90 backdrop-blur-md">
         <Search />
-        <div className="bg-emerald-800 p-10 shadow-inner">
-          <p className="text-white text-sm md:text-base leading-relaxed px-52">
+        <div className="bg-emerald-800 px-6 py-6 md:px-16 md:py-10 shadow-inner">
+          <p className="text-white text-sm md:text-base leading-relaxed md:px-20 lg:px-52 text-center">
             Welcome to our book collection! Use the filters below to explore and
             refine your search. You can select a category, or search by title,
             author, publisher, or ISBN. These tools will help you quickly
@@ -151,7 +151,7 @@ const Categories = () => {
                         />
                       </Link>
                       <Link to={`/details/${book.id}`}>
-                        <h3 className="text-lg font-bold mb-1 text-emerald-700 hover:text-emerald-800 transition">
+                        <h3 className="text-lg font-bold mb-1 text-emerald-700 hover:text-emerald-800 transition line-clamp-2">
                           {book.volumeInfo.title}
                         </h3>
                       </Link>

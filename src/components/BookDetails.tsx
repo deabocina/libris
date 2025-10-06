@@ -81,7 +81,7 @@ const BookDetails = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 text-gray-900">
-      <div className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-sm">
+      <div className="fixed top-0 left-0 w-full z-50 shadow-sm">
         <Search />
       </div>
 

@@ -182,16 +182,16 @@ const AboutUs = () => {
         </p>
       </section>
 
-      <section className="mt-28 text-center">
+      <section className="mt-28 text-center px-6 sm:px-10">
         <h2 className="text-3xl font-bold text-emerald-500 mb-8">
           What Our Readers Say
         </h2>
         <div className="space-y-6 max-w-3xl mx-auto">
-          <blockquote className="bg-gray-100 text-gray-900 p-14 rounded-lg shadow-md italic">
+          <blockquote className="bg-gray-100 text-gray-900 p-10 sm:p-14 rounded-lg shadow-md italic">
             "Libris transformed my reading habits! I always find the perfect
             book." – Alex P.
           </blockquote>
-          <blockquote className="bg-gray-100 text-gray-900 p-14 rounded-lg shadow-md italic">
+          <blockquote className="bg-gray-100 text-gray-900 p-10 sm:p-14 rounded-lg shadow-md italic">
             "The best curated book collections online. Highly recommended!" –
             Maria S.
           </blockquote>
