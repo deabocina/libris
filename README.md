@@ -47,18 +47,9 @@ Never lose track of your favourite books again!
 - Bookmark books you love for quick access later.
 - Easily save and view all your favourite titles in one place.
 
-## **💬 Random Book Quotes (Powered by [Quotable](https://github.com/lukePeavey/quotable))**
-
-Need some literary inspiration? We’ve got you covered!
-
-- Get a random book quote whenever you want a little spark of creativity or reflection.
-- Powered by **Quotable**, an open-source project created by [Luke Peavey](https://github.com/lukePeavey), this app fetches famous quotes from authors around the world, helping you dive deeper into the magic of literature!
-
 ## **📱 Responsive Across Devices**
 
 Read and browse anywhere, anytime!
 
 - Fully responsive design works great on any device – phone, tablet or desktop.
 - Stay connected to your favourite books on the go.
-
-![simplify](https://raw.githubusercontent.com/deabocina/libris/main/public/screenshots/showcase.png)
